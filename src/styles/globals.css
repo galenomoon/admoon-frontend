@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Satoshi-Light';
+  src: url('./fonts/Satoshi/Satoshi-Light.ttf') format('truetype');
+  font-weight: 300
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('./fonts/Satoshi/Satoshi-Regular.ttf') format('truetype');
+
+}
+
+@font-face {
+  font-family: 'Satoshi-Bold';
+  src: url('./fonts/Satoshi/Satoshi-Bold.ttf') format('truetype');
+  font-weight: 700
+}
+
+@font-face {
+  font-family: 'Satoshi-Medium';
+  src: url('./fonts/Satoshi/Satoshi-Medium.ttf') format('truetype');
+  font-weight: 500
+}
+
+@font-face {
+  font-family: 'Satoshi-Black';
+  src: url('./fonts/Satoshi/Satoshi-Black.ttf') format('truetype');
+  font-weight: 900
+}
+
+@font-face {
+  font-family: 'Satoshi-Variable';
+  src: url('./fonts/Satoshi/Satoshi-Variable.ttf') format('truetype');
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+body {
+  font-family: 'Satoshi-Variable', sans-serif;
+}
+
+.font-satoshi-variable {
+  font-family: 'Satoshi-Variable', sans-serif;
+}
+
+.font-satoshi-bold {
+  font-family: 'Satoshi-Bold', sans-serif;
+}
+
+.font-satoshi-black {
+  font-family: 'Satoshi-Black', sans-serif;
+}
+
+.font-satoshi-regular {
+  font-family: 'Satoshi', sans-serif;
+}
+
+.font-satoshi-medium {
+  font-family: 'Satoshi-Medium', sans-serif;
+}
+
+.font-satoshi-light {
+  font-family: 'Satoshi-Light', sans-serif;
+}
+
+.font-windsor {
+  font-family: 'Windsor', sans-serif;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
