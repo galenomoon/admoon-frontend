@@ -124,9 +124,10 @@ export default function ProductForm({
     }
   }
 
-  function currencyFormat(value: string) {
-    const number = Number(value.replace(/\D/g, ""));
-    return `R$ ${(number / 100).toFixed(2).replace(".", ",")}`;
+  function currencyFormat(value?: string | number) {
+    const isNumber = typeof value === "number";
+    const number = Number(`${isNumber ? value * 100 : value}`?.replace(/\D/g, ""));
+    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(number / 100);
   }
 
   function handleRemoveImage(index: number) {
@@ -249,11 +250,7 @@ export default function ProductForm({
           <input
             type="text"
             required
-            value={
-              product.price
-                ? currencyFormat(String(product.price))
-                : currencyFormat("")
-            }
+            value={currencyFormat(product.price)}
             placeholder="Preço do produto"
             onChange={(e) =>
               setProduct((product) => ({
