@@ -21,7 +21,6 @@ import { destroyCookie } from "nookies"
 //assets
 import admoon from "@/assets/admoon.png"
 
-
 export default function Menu() {
   const pathname = usePathname()
   const query = useParams()
@@ -79,8 +78,8 @@ export default function Menu() {
                 key={route_index}
                 href={route.href}
                 className={`px-8 py-3 text-xl ${route.href === `/${query.option}`
-                    ? "border-blue-800 bg-blue-800/10 text-blue-800"
-                    : "border-transparent opacity-60 duration-300 hover:bg-[#eee]"
+                  ? "border-blue-800 bg-blue-800/10 text-blue-800"
+                  : "border-transparent opacity-60 duration-300 hover:bg-[#eee]"
                   } font-satoshi-medium flex items-center gap-5 border-r-4`}
               >
                 <route.Icon size={26} weight="duotone" />

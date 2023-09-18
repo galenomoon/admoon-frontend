@@ -1,8 +1,26 @@
+
+//next
+import { Metadata } from "next";
+
 //components
 import Menu from "@/components/Menu";
 
 //styles
 import { Toaster } from "react-hot-toast";
+
+export async function generateMetadata({ params: { option } }: { params: { option: string } }): Promise<Metadata> {
+  function slugParser(slug: string) {
+    const separated = slug.split("-");
+    const capitalized = separated.map((word) => word.charAt(0).toUpperCase() + word.slice(1));
+    const text = capitalized.join(" ");
+    return text;
+  }
+  return {
+    title: `${slugParser(option)} | Admoon`,
+    description: "Admoon - The best way to manage your website",
+  };
+}
+
 
 export default function AdminSideLayout({
   children,

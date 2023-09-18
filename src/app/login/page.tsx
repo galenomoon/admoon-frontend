@@ -38,7 +38,7 @@ export default function Login() {
       .post("/auth/login", user)
       .then(({ data }) => {
         setCookie(undefined, "token", data.token)
-        push("/")
+        push("/welcome")
       })
       .catch((err) => {
         console.error(err)

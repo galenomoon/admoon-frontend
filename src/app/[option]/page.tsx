@@ -3,18 +3,17 @@ import React from 'react'
 
 //components
 import Welcome from '@/components/Welcome';
+import Products from '@/components/Products';
+import Categories from '@/components/Categories';
 
 //next
 import { useParams } from 'next/navigation'
-import Categories from '@/components/Categories';
-import Products from '@/components/Products';
 
 export default function Option() {
   const { option } = useParams()
 
   if (option === "categorias") return <Categories />
   if (option === "produtos") return <Products />
-  if (option === "welcome") return <Welcome />
 
   if (option === "estatisticas" || option === "redes-sociais")
     return (
@@ -24,4 +23,5 @@ export default function Option() {
         </p>
       </section>
     )
+  if (option === "welcome" || !option) return <Welcome />
 }
