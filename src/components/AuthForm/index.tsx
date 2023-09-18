@@ -18,7 +18,7 @@ export default function AuthForm({ user, setUser, handleAuth, isLoaded }: AuthFo
   const [isPasswordHidden, setIsPasswordHidden] = useState(true)
 
   return (
-    <form onSubmit={handleAuth} className='flex flex-col gap-5'>
+    <form onSubmit={handleAuth} className='flex flex-col gap-5 w-[300px]'>
       <div className='flex flex-col gap-3'>
         <section className='flex flex-col gap-1'>
           <label className='text-sm font-satoshi-regular'>Email</label>

@@ -6,7 +6,8 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 //assets
-import admoonLogo from "@/assets/admoon.png"
+import admoonLogo from "@/assets/dark_logo.png"
+import clouds from "@/assets/clouds.png"
 
 //styles
 import { Toaster, toast } from "react-hot-toast"
@@ -56,12 +57,29 @@ export default function Login() {
   }
 
   return (
-    <main className="font-satoshi-regular relative flex min-h-screen flex-col items-center justify-center sm:bg-white sm:px-4 md:bg-[#eee] md:px-24">
-      <Image src={admoonLogo} alt="logo" width={400} height={60} className="mb-12 sm:hidden md:block absolute top-28" />
-      <nav className="relative flex flex-col gap-4 rounded-[12px] bg-white sm:w-[96vw] sm:px-4 sm:py-10 md:w-[400px] md:p-10 md:shadow-xl">
-        <section className="flex flex-col gap-2">
-          <h1 className="font-satoshi-bold text-center text-3xl">Login</h1>
-          <span className="text-center  text-sm opacity-60">
+    <main className="font-satoshi-regular relative flex min-h-screen items-center justify-center sm:bg-white sm:px-4 md:bg-[#eee] md:px-0">
+      <section className="w-[50vw] h-screen bg-primary flex flex-col sm:hidden md:flex relative">
+        <Image
+          src={admoonLogo}
+          alt="logo"
+          width={1000}
+          height={120}
+          className="mb-12 w-[600px] sm:hidden md:block self-center absolute bottom-[45%] z-[20]"
+        />
+        <Image
+          src={clouds}
+          alt="logo"
+          objectFit="fill"
+          className="sm:hidden md:block self-center absolute bottom-0 z-[10] animate-fade-in-up"
+        />
+        <p className="text-white absolute bottom-10 self-center opacity-40">
+          © {year} Admoon - Todos os direitos reservados
+        </p>
+      </section>
+      <nav className=" relative flex flex-col items-center justify-center gap-4 md:rounded-none sm:rounded-[12px] bg-white sm:w-[96vw] sm:px-4 sm:py-10 md:w-[50vw] md:h-screen md:p-10 md:shadow-xl">
+        <section className="flex flex-col gap-2 w-[300px]">
+          <h1 className="font-satoshi-bold text-start text-3xl">Log in</h1>
+          <span className="text-start text-sm opacity-60">
             Olá, insira suas credenciais para acessar o <br />
             painel de administração
           </span>
@@ -72,9 +90,6 @@ export default function Login() {
           isLoaded={isLoaded}
           handleAuth={handleAuth}
         />
-        <p className="absolute -bottom-10 self-center opacity-40">
-          © {year} - Todos os direitos reservados
-        </p>
       </nav>
       <Toaster position="top-right" />
     </main>
