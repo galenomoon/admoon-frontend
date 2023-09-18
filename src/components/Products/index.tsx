@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 //next
-import { useRouter } from "next/router";
+import { useParams, useRouter } from "next/navigation";
 
 //interfaces
 import { IProduct, IProductPaginated } from "@/interfaces/product";
@@ -27,10 +27,8 @@ import { MagnifyingGlass, Rows, SquaresFour } from "@phosphor-icons/react";
 import { useDebounce } from "@/hooks/useDebounce";
 
 export default function Products() {
-  const {
-    query: { category },
-    push,
-  } = useRouter();
+  const { category } = useParams();
+  const { push } = useRouter();
 
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [currentCategory, setCurrentCategory] = useState<ICategory>({
@@ -141,11 +139,10 @@ export default function Products() {
                   onClick={() =>
                     setCurrentCategory(undefined as unknown as ICategory)
                   }
-                  className={`border-b-4 whitespace-nowrap ${
-                    !currentCategory?.id
-                      ? "text-blue-800 border-blue-800"
-                      : "border-gray-100"
-                  } hover:bg-[#eee]/60 duration-300 rounded-t-lg w-fit px-6 py-3`}
+                  className={`border-b-4 whitespace-nowrap ${!currentCategory?.id
+                    ? "text-blue-800 border-blue-800"
+                    : "border-gray-100"
+                    } hover:bg-[#eee]/60 duration-300 rounded-t-lg w-fit px-6 py-3`}
                 >
                   Todos
                 </button>
@@ -153,11 +150,10 @@ export default function Products() {
                   <button
                     key={index}
                     onClick={() => setCurrentCategory(category)}
-                    className={`border-b-4 whitespace-nowrap ${
-                      category.id === currentCategory?.id
-                        ? "text-blue-800 border-blue-800"
-                        : "border-gray-100"
-                    } hover:bg-[#eee]/60 duration-300 rounded-t-lg w-fit px-6 py-3`}
+                    className={`border-b-4 whitespace-nowrap ${category.id === currentCategory?.id
+                      ? "text-blue-800 border-blue-800"
+                      : "border-gray-100"
+                      } hover:bg-[#eee]/60 duration-300 rounded-t-lg w-fit px-6 py-3`}
                   >
                     {category.name} ({category.quantityProducts})
                   </button>
@@ -183,21 +179,19 @@ export default function Products() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsGrid(true)}
-                    className={`${
-                      isGrid
-                        ? "bg-blue-800 text-white border-blue-800"
-                        : "bg-white hover:bg-gray-100"
-                    } border-2 duration-200 flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] rounded-lg font-satoshi-medium`}
+                    className={`${isGrid
+                      ? "bg-blue-800 text-white border-blue-800"
+                      : "bg-white hover:bg-gray-100"
+                      } border-2 duration-200 flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] rounded-lg font-satoshi-medium`}
                   >
                     <SquaresFour size={20} />
                   </button>
                   <button
                     onClick={() => setIsGrid(false)}
-                    className={`${
-                      !isGrid
-                        ? "bg-blue-800 text-white border-blue-800"
-                        : "bg-white hover:bg-gray-100"
-                    } border-2 duration-200 flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] rounded-lg font-satoshi-medium`}
+                    className={`${!isGrid
+                      ? "bg-blue-800 text-white border-blue-800"
+                      : "bg-white hover:bg-gray-100"
+                      } border-2 duration-200 flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] rounded-lg font-satoshi-medium`}
                   >
                     <Rows size={20} />
                   </button>
@@ -210,7 +204,7 @@ export default function Products() {
                   onClick={() =>
                     categories.length
                       ? setIsModalOpen(true)
-                      : push("/admin/categorias?cadastrar=true")
+                      : push("/categorias?cadastrar=true")
                   }
                   buttonLabel={
                     categories.length

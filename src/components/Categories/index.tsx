@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
 //next
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'
 
 //config
 import api_client from '@/config/api_client'
@@ -20,8 +20,8 @@ import CategoriesList from '../CategoriesList'
 import { ICategory } from '@/interfaces/category'
 
 export default function Categories() {
-  const { query } = useRouter()
-  const openModal = eval(query?.cadastrar as string)
+  const { cadastrar } = useParams()
+  const openModal = eval(cadastrar as string)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(openModal)
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
   const [selectedCategory, setSelectedCategory] = useState<ICategory>()

@@ -6,12 +6,14 @@ import Welcome from '@/components/Welcome';
 
 //next
 import { useParams } from 'next/navigation'
+import Categories from '@/components/Categories';
+import Products from '@/components/Products';
 
 export default function Option() {
   const { option } = useParams()
 
-  if (option === "categorias") return <Welcome />
-  if (option === "produtos") return <Welcome />
+  if (option === "categorias") return <Categories />
+  if (option === "produtos") return <Products />
   if (option === "welcome") return <Welcome />
 
   if (option === "estatisticas" || option === "redes-sociais")
