@@ -23,5 +23,5 @@ export default function Option() {
         </p>
       </section>
     )
-  if (option === "welcome" || !option) return <Welcome />
+  if (option === "welcome") return <Welcome />
 }
