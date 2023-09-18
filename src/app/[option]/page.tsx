@@ -12,15 +12,14 @@ export default function Option() {
 
   if (option === "categorias") return <Welcome />
   if (option === "produtos") return <Welcome />
-  if (option === "redes-sociais") return <Welcome />
-  if (option === "estatisticas") return <Welcome />
   if (option === "welcome") return <Welcome />
-  
-  return (
-    <section className="flex flex-col items-center justify-center w-full h-full">
-      <p className="text-5xl font-satoshi-medium text-gray-500 animate-slide-in">
-        👨🏽‍💻 Em desenvolvimento...
-      </p>
-    </section>
-  )
+
+  if (option === "estatisticas" || option === "redes-sociais")
+    return (
+      <section className="flex flex-col items-center justify-center w-full h-full">
+        <p className="text-5xl font-satoshi-medium text-gray-500 animate-slide-in">
+          👨🏽‍💻 Em desenvolvimento...
+        </p>
+      </section>
+    )
 }
