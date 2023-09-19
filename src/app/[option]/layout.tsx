@@ -31,7 +31,7 @@ export default function AdminSideLayout({
   return (
     <main className="relative flex md:flex-row sm:flex-col min-h-screen w-fit font-satoshi-regular sm:bg-white md:bg-[#eee]">
       <Menu />
-      <section className="flex flex-col px-12 pt-12 md:w-[calc(100vw-324px)]">
+      <section className="flex flex-col sm:px-0 md:px-12 pt-12 md:w-[calc(100vw-324px)]">
         {children}
       </section>
       <TabNavigation />

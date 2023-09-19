@@ -1,126 +1,136 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 
 //next
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation"
 
 //interfaces
-import { IProduct, IProductPaginated } from "@/interfaces/product";
-import { ICategory } from "@/interfaces/category";
+import { IProduct, IProductPaginated } from "@/interfaces/product"
+import { ICategory } from "@/interfaces/category"
 
 //config
-import api_client from "@/config/api_client";
+import api_client from "@/config/api_client"
 
 //components
-import Modal from "../Modal";
-import Alert from "../Alert";
-import Button from "../Button";
-import Pagination from "../Pagination";
-import EmptyState from "../EmptyState";
-import ProductList from "../ProductList";
-import ProductForm from "../ProductForm";
+import Modal from "../Modal"
+import Alert from "../Alert"
+import Button from "../Button"
+import Pagination from "../Pagination"
+import EmptyState from "../EmptyState"
+import ProductList from "../ProductList"
+import ProductForm from "../ProductForm"
 
 //styles
-import { toast } from "react-hot-toast";
-import { MagnifyingGlass, Rows, SquaresFour } from "@phosphor-icons/react";
+import { toast } from "react-hot-toast"
+import { MagnifyingGlass, Rows, SquaresFour } from "@phosphor-icons/react"
 
 //hooks
-import { useDebounce } from "@/hooks/useDebounce";
+import { useDebounce } from "@/hooks/useDebounce"
+import SearchBar from "../SearchBar"
 
 export default function Products() {
-  const { category } = useParams();
-  const { push } = useRouter();
+  const { category } = useParams()
+  const { push } = useRouter()
 
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>([])
   const [currentCategory, setCurrentCategory] = useState<ICategory>({
     id: Number(category),
-  } as ICategory);
+  } as ICategory)
   const [products, setProducts] = useState<IProductPaginated>(
-    {} as unknown as IProductPaginated
-  );
+    {} as unknown as IProductPaginated,
+  )
 
-  const [selectedProduct, setSelectedProduct] = useState<IProduct>();
-  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
-  const [productName, setProductName] = useState<string>("");
-  const [isGrid, setIsGrid] = useState<boolean>(true);
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>()
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
+  const [productName, setProductName] = useState<string>("")
+  const [isGrid, setIsGrid] = useState<boolean>(true)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
-  const debouncedSearch = useDebounce(productName);
-
-  useEffect(() => {
-    getCategories();
-  }, []);
+  const debouncedSearch = useDebounce(productName)
 
   useEffect(() => {
-    getProducts();
+    getCategories()
+  }, [])
+
+  useEffect(() => {
+    getProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCategory, debouncedSearch]);
+  }, [currentCategory, debouncedSearch])
 
   async function getCategories() {
-    setIsLoaded(false);
+    setIsLoaded(false)
     return await api_client
       .get("/categories")
       .then(({ data }) => setCategories(data))
       .catch((error) => console.error(error))
-      .finally(() => setIsLoaded(true));
+      .finally(() => setIsLoaded(true))
   }
 
   async function getProducts(page = 1) {
-    const nameQuery = debouncedSearch ? `&q=${debouncedSearch}` : "";
+    const nameQuery = debouncedSearch ? `&q=${debouncedSearch}` : ""
 
     const endpoint = currentCategory?.id
       ? `/products/category/${currentCategory?.id}?page=${page}${nameQuery}`
-      : `/products?page=${page}${nameQuery}`;
+      : `/products?page=${page}${nameQuery}`
 
     return await api_client
       .get(endpoint)
       .then(({ data }) => setProducts(data))
-      .catch((error) => console.error(error));
+      .catch((error) => console.error(error))
   }
 
   function openEditModal(product: IProduct) {
-    setSelectedProduct(product);
-    setIsModalOpen(true);
+    setSelectedProduct(product)
+    setIsModalOpen(true)
   }
 
   function openDeleteAlert(product: IProduct) {
-    setSelectedProduct(product);
-    setIsAlertOpen(true);
+    setSelectedProduct(product)
+    setIsAlertOpen(true)
   }
 
   function deleteProduct() {
-    if (!selectedProduct) return;
+    if (!selectedProduct) return
     api_client
       .delete(`/products/${selectedProduct.id}`)
       .then(({ data }) => {
-        setProducts(data);
-        toast.success("Produto excluído com sucesso");
+        setProducts(data)
+        toast.success("Produto excluído com sucesso")
       })
       .catch((error) => {
-        console.error(error);
-        toast.error("Erro ao excluir produto");
+        console.error(error)
+        toast.error("Erro ao excluir produto")
       })
-      .finally(() => getAll());
+      .finally(() => getAll())
   }
 
   function close() {
-    setIsAlertOpen(false);
-    setIsModalOpen(false);
-    setSelectedProduct(undefined);
+    setIsAlertOpen(false)
+    setIsModalOpen(false)
+    setSelectedProduct(undefined)
   }
 
   async function getAll() {
-    setSelectedProduct(undefined);
-    await getProducts();
-    await getCategories();
+    setSelectedProduct(undefined)
+    await getProducts()
+    await getCategories()
   }
 
   return (
     <>
-      <main className="flex flex-col h-full gap-6 w-full">
-        <h1 className="text-3xl font-satoshi-medium">Produtos</h1>
-        <div className="flex flex-col h-[85vh] text-typography-main relative overflow-hidden max-w-full bg-white shadow-lg rounded-xl pb-2">
-          <header className="h-[68px] bg-white w-full flex items-center justify-between p-4">
+      <main className="flex h-full w-full flex-col gap-6">
+        <header className="flex sm:h-[60px] md:h-fit md:w-full sm:w-[100dvw] sm:px-3 md:px-0 items-baseline justify-between">
+          <h1 className="font-satoshi-medium text-3xl">Produtos</h1>
+          <Button
+            className="md:hidden sm:block"
+            disabled={!categories.length}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Cadastrar Produto
+          </Button>
+        </header>
+        <div className="text-typography-main relative flex h-[85vh] sm:max-w-[100dvw] md:max-w-full flex-col overflow-hidden rounded-xl bg-white pb-2 shadow-lg">
+          <header className="md:flex sm:hidden  h-[68px] w-full items-center justify-between bg-white p-4">
             <p className="text-typography-main font-satoshi-semibold text-xl">
               Gerenciar Produtos
             </p>
@@ -132,17 +142,17 @@ export default function Products() {
               Cadastrar Produto
             </Button>
           </header>
-          <section className="overflow-y-auto h-full w-full scrollbar-hide">
-            <nav className="font-satoshi-medium flex flex-col sticky top-0 z-20 bg-white shadow-sm">
-              <div className="flex overflow-x-auto scrollbar-hide">
+          <section className="scrollbar-hide h-full w-full overflow-y-auto">
+            <nav className="font-satoshi-medium sticky top-0 z-20 flex flex-col md:pb-0 sm:pb-4 bg-white shadow-sm">
+              <div className="scrollbar-hide flex overflow-x-auto">
                 <button
                   onClick={() =>
                     setCurrentCategory(undefined as unknown as ICategory)
                   }
-                  className={`border-b-4 whitespace-nowrap ${!currentCategory?.id
-                    ? "text-blue-800 border-blue-800"
+                  className={`whitespace-nowrap border-b-4 ${!currentCategory?.id
+                    ? "border-blue-800 text-blue-800"
                     : "border-gray-100"
-                    } hover:bg-[#eee]/60 duration-300 rounded-t-lg w-fit px-6 py-3`}
+                    } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                 >
                   Todos
                 </button>
@@ -150,56 +160,57 @@ export default function Products() {
                   <button
                     key={index}
                     onClick={() => setCurrentCategory(category)}
-                    className={`border-b-4 whitespace-nowrap ${category.id === currentCategory?.id
-                      ? "text-blue-800 border-blue-800"
+                    className={`whitespace-nowrap border-b-4 ${category.id === currentCategory?.id
+                      ? "border-blue-800 text-blue-800"
                       : "border-gray-100"
-                      } hover:bg-[#eee]/60 duration-300 rounded-t-lg w-fit px-6 py-3`}
+                      } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                   >
                     {category.name} ({category.quantityProducts})
                   </button>
                 ))}
-                <span className="border-b-4 w-full border-gray-100" />
+                <span className="w-full border-b-4 border-gray-100" />
               </div>
-              <header className="flex w-full p-3 gap-3">
+              <header className="flex w-full gap-3 p-3 justify-between">
                 <Pagination
                   nextPage={getProducts}
                   previousPage={getProducts}
                   totalPages={products.totalPages}
                   currentPage={products.currentPage}
                 />
-                <div className="flex w-full gap-2 items-center px-4 py-2 bg-gray-100 rounded-xl overflow-hidden">
-                  <MagnifyingGlass size={20} color="black" />
-                  <input
-                    className="bg-gray-100 focus:outline-none w-full"
-                    onChange={(e) => setProductName(e.target.value)}
-                    placeholder="Pesquisar produto..."
-                    value={productName}
-                  />
-                </div>
+                <SearchBar
+                  className="sm:hidden md:flex"
+                  value={productName}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProductName(e.target.value)}
+                />
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsGrid(true)}
                     className={`${isGrid
-                      ? "bg-blue-800 text-white border-blue-800"
+                      ? "border-blue-800 bg-blue-800 text-white"
                       : "bg-white hover:bg-gray-100"
-                      } border-2 duration-200 flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] rounded-lg font-satoshi-medium`}
+                      } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <SquaresFour size={20} />
                   </button>
                   <button
                     onClick={() => setIsGrid(false)}
                     className={`${!isGrid
-                      ? "bg-blue-800 text-white border-blue-800"
+                      ? "border-blue-800 bg-blue-800 text-white"
                       : "bg-white hover:bg-gray-100"
-                      } border-2 duration-200 flex-shrink-0 flex items-center justify-center w-[40px] h-[40px] rounded-lg font-satoshi-medium`}
+                      } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <Rows size={20} />
                   </button>
                 </div>
               </header>
+              <SearchBar
+                className="md:hidden sm:flex w-[95%] self-center"
+                value={productName}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProductName(e.target.value)}
+              />
             </nav>
             {products?.results?.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-[80%] w-full">
+              <div className="flex h-[80%] w-full flex-col items-center justify-center">
                 <EmptyState
                   onClick={() =>
                     categories.length
@@ -246,7 +257,7 @@ export default function Products() {
       <Modal
         isOpen={isModalOpen}
         close={() => close()}
-        className="w-fit !max-h-fit"
+        className="!max-h-fit w-fit"
         title={selectedProduct?.id ? "Editar produto" : "Adicionar produto"}
       >
         <ProductForm
@@ -262,5 +273,5 @@ export default function Products() {
         />
       </Modal>
     </>
-  );
+  )
 }

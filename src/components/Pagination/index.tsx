@@ -17,7 +17,7 @@ export default function Pagination({
   previousPage,
 }: IPaginationProps) {
   return (
-    <section className="flex items-center justify-center rounded-full p-2 gap-1 bg-gray-200 !w-[220px]">
+    <section className="flex items-center justify-center rounded-full p-2 gap-1 bg-gray-200 sm:w-[170px] md:!w-[220px]">
       <p className="whitespace-nowrap w-[70px] gap-1 flex items-center justify-center">
         <span className="font-satoshi-bold">
           {currentPage < 10 ? `0${currentPage}` : currentPage}
