@@ -18,7 +18,7 @@ export default function Option() {
   if (option === "estatisticas" || option === "redes-sociais")
     return (
       <section className="flex flex-col items-center justify-center w-full h-full">
-        <p className="text-5xl font-satoshi-medium text-gray-500 animate-slide-in">
+        <p className="sm:text-xl md:text-5xl font-satoshi-medium text-gray-500 animate-slide-in">
           👨🏽‍💻 Em desenvolvimento...
         </p>
       </section>

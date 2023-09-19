@@ -34,7 +34,7 @@ export default function EmptyState({ imageSrc, imageStyle, title, description, o
             className={`flex-shrink-0 ${imageStyle?.imageClassName || "h-[360px]"} mt-10 object-cover`}
           />
         </figure>
-        <h1 className="text-3xl font-satoshi-medium text-center">{title}</h1>
+        <h1 className="sm:text-2xl md:text-3xl font-satoshi-medium text-center">{title}</h1>
         {description &&
           <p className="opacity-40 text-center">
             {description.split('\n').map((text, index) => (

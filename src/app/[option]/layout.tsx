@@ -3,7 +3,7 @@
 import { Metadata } from "next";
 
 //components
-import Menu from "@/components/Menu";
+import Menu, { TabNavigation } from "@/components/Menu";
 
 //styles
 import { Toaster } from "react-hot-toast";
@@ -29,11 +29,12 @@ export default function AdminSideLayout({
 }) {
 
   return (
-    <main className="relative flex min-h-screen w-fit font-satoshi-regular sm:bg-white md:bg-[#eee]">
+    <main className="relative flex md:flex-row sm:flex-col min-h-screen w-fit font-satoshi-regular sm:bg-white md:bg-[#eee]">
       <Menu />
-      <section className="flex flex-col px-12 pt-12 w-[calc(100vw-324px)]">
+      <section className="flex flex-col px-12 pt-12 md:w-[calc(100vw-324px)]">
         {children}
       </section>
+      <TabNavigation />
       <Toaster position="top-right" />
     </main>
   );

@@ -8,13 +8,13 @@ import welcome from '@/assets/welcome.svg'
 
 export default function Welcome() {
   return (
-    <section className='w-full h-full flex flex-col justify-center items-center'>
+    <section className='sm:h-[80dvh] md:w-full h-full flex flex-col justify-center items-center'>
       <EmptyState
         imageSrc={welcome}
         imageStyle={{
           width: 564,
-          figureClassName: 'h-[422px]',
-          imageClassName: 'h-[370px]'
+          figureClassName: 'sm:h-[300px] md:h-[422px]',
+          imageClassName: 'sm:h-[200px] md:h-[370px]'
 
         }}
         title='Bem-vindo(a) ao painel de administração da Hi, Moon Store!'
