@@ -21,7 +21,7 @@ import ProductForm from "../ProductForm"
 
 //styles
 import { toast } from "react-hot-toast"
-import { MagnifyingGlass, Rows, SquaresFour } from "@phosphor-icons/react"
+import { Plus, Rows, SquaresFour } from "@phosphor-icons/react"
 
 //hooks
 import { useDebounce } from "@/hooks/useDebounce"
@@ -118,19 +118,19 @@ export default function Products() {
 
   return (
     <>
-      <main className="flex h-full w-full flex-col gap-6">
-        <header className="flex sm:h-[60px] md:h-fit md:w-full sm:w-[100dvw] sm:px-3 md:px-0 items-baseline justify-between">
+      <main className="flex h-full w-full flex-col gap-6 relative">
+        <header className="sm:hidden md:flex items-baseline justify-between sm:h-[60px] sm:w-[100dvw] sm:px-3 md:h-fit md:w-full md:px-0">
           <h1 className="font-satoshi-medium text-3xl">Produtos</h1>
-          <Button
-            className="md:hidden sm:block"
-            disabled={!categories.length}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Cadastrar Produto
-          </Button>
         </header>
-        <div className="text-typography-main relative flex h-[85vh] sm:max-w-[100dvw] md:max-w-full flex-col overflow-hidden rounded-xl bg-white pb-2 shadow-lg">
-          <header className="md:flex sm:hidden  h-[68px] w-full items-center justify-between bg-white p-4">
+        <Button
+          className="absolute !w-[64px] !h-[64px] right-7 bottom-[140px] z-[99] !rounded-full md:hidden flex-shrink-0"
+          disabled={!categories.length}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <Plus size={32} color='#FFF' className="flex-shrink-0" />
+        </Button>
+        <div className="text-typography-main relative flex h-[85vh] flex-col overflow-hidden rounded-xl bg-white pb-2 shadow-lg sm:max-w-[100dvw] md:max-w-full">
+          <header className="h-[68px] w-full  items-center justify-between bg-white p-4 sm:hidden md:flex">
             <p className="text-typography-main font-satoshi-semibold text-xl">
               Gerenciar Produtos
             </p>
@@ -143,7 +143,7 @@ export default function Products() {
             </Button>
           </header>
           <section className="scrollbar-hide h-full w-full overflow-y-auto">
-            <nav className="font-satoshi-medium sticky top-0 z-20 flex flex-col md:pb-0 sm:pb-4 bg-white shadow-sm">
+            <nav className="font-satoshi-medium sticky top-0 z-20 flex flex-col bg-white shadow-sm sm:pb-4 md:pb-0">
               <div className="scrollbar-hide flex overflow-x-auto">
                 <button
                   onClick={() =>
@@ -170,7 +170,7 @@ export default function Products() {
                 ))}
                 <span className="w-full border-b-4 border-gray-100" />
               </div>
-              <header className="flex w-full gap-3 p-3 justify-between">
+              <header className="flex w-full justify-between gap-3 p-3">
                 <Pagination
                   nextPage={getProducts}
                   previousPage={getProducts}
@@ -180,7 +180,9 @@ export default function Products() {
                 <SearchBar
                   className="sm:hidden md:flex"
                   value={productName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProductName(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setProductName(e.target.value)
+                  }
                 />
                 <div className="flex gap-2">
                   <button
@@ -203,11 +205,15 @@ export default function Products() {
                   </button>
                 </div>
               </header>
-              <SearchBar
-                className="md:hidden sm:flex w-[95%] self-center"
-                value={productName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setProductName(e.target.value)}
-              />
+              <div className="mx-3 sm:flex md:hidden">
+                <SearchBar
+                  className=" w-full self-center"
+                  value={productName}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setProductName(e.target.value)
+                  }
+                />
+              </div>
             </nav>
             {products?.results?.length === 0 ? (
               <div className="flex h-[80%] w-full flex-col items-center justify-center">
@@ -257,7 +263,7 @@ export default function Products() {
       <Modal
         isOpen={isModalOpen}
         close={() => close()}
-        className="!max-h-fit w-fit"
+        className="md:max-h-fit sm:max-h-[100dvh] sm:max-w-[100dvw] sm:w-[100dvw]  overflow-y-auto md:self-center sm:self-start md:w-[600px]"
         title={selectedProduct?.id ? "Editar produto" : "Adicionar produto"}
       >
         <ProductForm

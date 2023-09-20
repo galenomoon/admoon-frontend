@@ -143,7 +143,7 @@ export default function ProductForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full pb-3">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:w-full h-fit overflow-auto md:w-full pb-3">
       <section
         id="images"
         className="flex flex-col gap-4 overflow-hidden w-full border-y-[1.6px] border-typography-black/10 pb-4 pt-6"
@@ -164,7 +164,7 @@ export default function ProductForm({
           </button>
         </aside>
         <div className="flex flex-col">
-          <div className="overflow-x-auto w-[500px] flex">
+          <div className="overflow-x-auto flex">
             <div className="flex gap-2 w-fit">
               {images?.map((image, index) => (
                 <div
@@ -208,7 +208,7 @@ export default function ProductForm({
       </section>
       <section
         id="productDetails"
-        className="flex flex-col gap-2 flex-shrink-0 w-[500px]"
+        className="flex flex-col gap-2 flex-shrink-0"
       >
         <label className="flex flex-col gap-1">
           <span className="text-typography-main font-satoshi-medium">
@@ -274,7 +274,7 @@ export default function ProductForm({
                 categoryId: Number(e.target.value),
               }))
             }
-            className="border border-background-gray/20 bg-white rounded-lg px-4 py-2"
+            className="border border-background-gray/20 bg-white rounded-lg px-4 sm:h-[40px] py-2"
           >
             <option value={undefined}>Selecione uma categoria</option>
             {categories?.map((category) => (
@@ -284,7 +284,7 @@ export default function ProductForm({
             ))}
           </select>
         </label>
-        <div className="flex  gap-2">
+        <div className="flex mt-6 gap-2">
           <button
             type="submit"
             disabled={!isLoaded}
