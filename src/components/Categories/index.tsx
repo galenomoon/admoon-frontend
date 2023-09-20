@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react"
 
 //next
-import { useParams } from 'next/navigation'
+import { useParams } from "next/navigation"
 
 //config
-import api_client from '@/config/api_client'
+import api_client from "@/config/api_client"
 
 //styles
-import { toast } from 'react-hot-toast'
+import { toast } from "react-hot-toast"
+import { Plus } from "@phosphor-icons/react"
 
 //components
-import Modal from '../Modal'
-import Alert from '../Alert'
-import Button from '../Button'
-import CategoryForm from '../CategoryForm'
-import CategoriesList from '../CategoriesList'
+import Modal from "../Modal"
+import Alert from "../Alert"
+import Button from "../Button"
+import CategoryForm from "../CategoryForm"
+import CategoriesList from "../CategoriesList"
 
 //interfaces
-import { ICategory } from '@/interfaces/category'
+import { ICategory } from "@/interfaces/category"
 
 export default function Categories() {
   const { cadastrar } = useParams()
@@ -34,22 +35,24 @@ export default function Categories() {
 
   async function getCategories() {
     setIsLoaded(false)
-    return await api_client.get('/categories')
+    return await api_client
+      .get("/categories")
       .then(({ data }) => setCategories(data))
-      .catch(error => console.error(error))
+      .catch((error) => console.error(error))
       .finally(() => setIsLoaded(true))
   }
 
   async function deleteCategory() {
     if (!selectedCategory) return
-    await api_client.delete(`/categories/${selectedCategory.id}`)
+    await api_client
+      .delete(`/categories/${selectedCategory.id}`)
       .then(({ data }) => {
         setCategories(data)
-        toast.success("Categoria excluída com sucesso");
+        toast.success("Categoria excluída com sucesso")
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error)
-        toast.error('Erro ao excluir categoria')
+        toast.error("Erro ao excluir categoria")
       })
       .finally(() => close())
   }
@@ -72,14 +75,21 @@ export default function Categories() {
 
   return (
     <>
-      <main className='flex flex-col h-full gap-6'>
-        <h1 className='text-3xl font-satoshi-medium'>
+      <main className="relative flex h-full w-full flex-col gap-6">
+        <h1 className="font-satoshi-medium text-3xl sm:hidden md:block">
           Categorias
         </h1>
-        <section className='flex flex-col gap-6 h-full'>
-          <div className="flex flex-col h-[85vh] text-typography-main relative overflow-hidden w-full bg-white shadow-lg rounded-xl pb-2">
-            <header className='h-[68px] bg-white w-full flex items-center justify-between p-4'>
-              <p className='text-typography-main font-satoshi-semibold text-xl'>
+        <Button
+          className="fixed bottom-[140px] right-7 z-[99] !h-[64px] !w-[64px] flex-shrink-0 !rounded-full md:hidden"
+          disabled={!categories.length}
+          onClick={() => setIsModalOpen(true)}
+        >
+          <Plus size={32} color="#FFF" className="flex-shrink-0" />
+        </Button>
+        <section className="flex h-full w-full flex-col gap-6">
+          <div className="text-typography-main relative flex w-full flex-col overflow-hidden rounded-xl bg-white pb-2 shadow-lg sm:h-[80dvh] sm:w-screen md:h-[85vh] md:w-full">
+            <header className="h-[68px] w-full items-center justify-between bg-white p-4 sm:hidden md:flex">
+              <p className="text-typography-main font-satoshi-semibold text-xl">
                 Gerenciar Categorias
               </p>
               <br />
@@ -102,18 +112,20 @@ export default function Categories() {
         isOpen={!!selectedCategory && isAlertOpen}
         close={() => close()}
         title={`Excluir categoria "${selectedCategory?.name}"`}
-        message='Tem certeza que deseja excluir esta categoria?'
-        warning='Todos os produtos desta categoria serão excluídos também.'
+        message="Tem certeza que deseja excluir esta categoria?"
+        warning="Todos os produtos desta categoria serão excluídos também."
       />
       <Modal
         isOpen={isModalOpen}
         close={() => close()}
-        title={selectedCategory?.id ? 'Editar categoria' : 'Cadastrar categoria'}
+        title={
+          selectedCategory?.id ? "Editar categoria" : "Cadastrar categoria"
+        }
       >
         <CategoryForm
           getCategories={getCategories}
           close={() => close()}
-          category={selectedCategory || { id: 0, name: '' }}
+          category={selectedCategory || { id: 0, name: "" }}
         />
       </Modal>
     </>

@@ -14,6 +14,7 @@ import api_client from "@/config/api_client"
 import Modal from "../Modal"
 import Alert from "../Alert"
 import Button from "../Button"
+import SearchBar from "../SearchBar"
 import Pagination from "../Pagination"
 import EmptyState from "../EmptyState"
 import ProductList from "../ProductList"
@@ -25,7 +26,6 @@ import { Plus, Rows, SquaresFour } from "@phosphor-icons/react"
 
 //hooks
 import { useDebounce } from "@/hooks/useDebounce"
-import SearchBar from "../SearchBar"
 
 export default function Products() {
   const { category } = useParams()
@@ -118,16 +118,14 @@ export default function Products() {
 
   return (
     <>
-      <main className="flex h-full w-full flex-col gap-6 relative">
-        <header className="sm:hidden md:flex items-baseline justify-between sm:h-[60px] sm:w-[100dvw] sm:px-3 md:h-fit md:w-full md:px-0">
-          <h1 className="font-satoshi-medium text-3xl">Produtos</h1>
-        </header>
+      <main className="relative flex h-full w-full flex-col gap-6">
+        <h1 className="font-satoshi-medium text-3xl sm:hidden md:block">Produtos</h1>
         <Button
-          className="absolute !w-[64px] !h-[64px] right-7 bottom-[140px] z-[99] !rounded-full md:hidden flex-shrink-0"
+          className="absolute bottom-[140px] right-7 z-[99] !h-[64px] !w-[64px] flex-shrink-0 !rounded-full md:hidden"
           disabled={!categories.length}
           onClick={() => setIsModalOpen(true)}
         >
-          <Plus size={32} color='#FFF' className="flex-shrink-0" />
+          <Plus size={32} color="#FFF" className="flex-shrink-0" />
         </Button>
         <div className="text-typography-main relative flex h-[85vh] flex-col overflow-hidden rounded-xl bg-white pb-2 shadow-lg sm:max-w-[100dvw] md:max-w-full">
           <header className="h-[68px] w-full  items-center justify-between bg-white p-4 sm:hidden md:flex">
@@ -263,7 +261,7 @@ export default function Products() {
       <Modal
         isOpen={isModalOpen}
         close={() => close()}
-        className="md:max-h-fit sm:max-h-[100dvh] sm:max-w-[100dvw] sm:w-[100dvw]  overflow-y-auto md:self-center sm:self-start md:w-[600px]"
+        className="  md:w-[600px] "
         title={selectedProduct?.id ? "Editar produto" : "Adicionar produto"}
       >
         <ProductForm
