@@ -119,7 +119,9 @@ export default function Products() {
   return (
     <>
       <main className="relative flex h-full w-full flex-col gap-6">
-        <h1 className="font-satoshi-medium text-3xl sm:hidden md:block">Produtos</h1>
+        <h1 className="font-satoshi-medium text-3xl sm:hidden md:block">
+          Produtos
+        </h1>
         <Button
           className="absolute bottom-[140px] right-7 z-[99] !h-[64px] !w-[64px] flex-shrink-0 !rounded-full md:hidden"
           disabled={!categories.length}
@@ -148,8 +150,8 @@ export default function Products() {
                     setCurrentCategory(undefined as unknown as ICategory)
                   }
                   className={`whitespace-nowrap border-b-4 ${!currentCategory?.id
-                    ? "border-blue-800 text-blue-800"
-                    : "border-gray-100"
+                      ? "border-blue-800 text-blue-800"
+                      : "border-gray-100"
                     } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                 >
                   Todos
@@ -159,8 +161,8 @@ export default function Products() {
                     key={index}
                     onClick={() => setCurrentCategory(category)}
                     className={`whitespace-nowrap border-b-4 ${category.id === currentCategory?.id
-                      ? "border-blue-800 text-blue-800"
-                      : "border-gray-100"
+                        ? "border-blue-800 text-blue-800"
+                        : "border-gray-100"
                       } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                   >
                     {category.name} ({category.quantityProducts})
@@ -186,8 +188,8 @@ export default function Products() {
                   <button
                     onClick={() => setIsGrid(true)}
                     className={`${isGrid
-                      ? "border-blue-800 bg-blue-800 text-white"
-                      : "bg-white hover:bg-gray-100"
+                        ? "border-blue-800 bg-blue-800 text-white"
+                        : "bg-white hover:bg-gray-100"
                       } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <SquaresFour size={20} />
@@ -195,8 +197,8 @@ export default function Products() {
                   <button
                     onClick={() => setIsGrid(false)}
                     className={`${!isGrid
-                      ? "border-blue-800 bg-blue-800 text-white"
-                      : "bg-white hover:bg-gray-100"
+                        ? "border-blue-800 bg-blue-800 text-white"
+                        : "bg-white hover:bg-gray-100"
                       } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <Rows size={20} />
