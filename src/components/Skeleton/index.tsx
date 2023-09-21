@@ -33,13 +33,13 @@ export function ProductSkeleton({ isGrid = false, length = 1 }) {
         key={index}
         className={`relative flex  ${
           isGrid
-            ? "flex-col sm:h-[260px] sm:w-full md:h-[370px] md:w-[235px]"
-            : "h-fit w-full gap-6"
+            ? "flex-col sm:!h-[260px] sm:!w-full md:!h-[370px] md:!w-[235px]"
+            : "!h-fit !w-full gap-6"
         } bg-gray-100 p-2`}
       >
         <Skeleton
           className={`${
-            isGrid ? "h-[220px] w-full max-w-[220px]" : "!h-[124px] !w-[124px]"
+            isGrid ? "!h-[220px] !w-full !max-w-[220px]" : "!h-[124px] !w-[124px]"
           }`}
           conditional={false}
         />
