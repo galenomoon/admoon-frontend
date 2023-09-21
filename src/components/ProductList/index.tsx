@@ -32,7 +32,7 @@ export default function ProductList({
     );
 
   return (
-    <section className={`flex ${isGrid ? "flex-wrap" : "flex-col"} gap-4 p-4`}>
+    <section className={`${isGrid ? "sm:grid sm:grid-cols-2 md:flex md:flex-wrap" : "flex flex-col"} sm:gap-1 md:gap-4 sm:p-2 md:p-4`}>
       {products?.map((product) => (
         <React.Fragment key={product.id}>
           <ProductCard
