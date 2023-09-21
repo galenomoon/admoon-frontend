@@ -27,7 +27,7 @@ export default function ProductCard({
     <div
       className={`relative flex gap-3 ${
         isGrid
-          ? "flex-col sm:h-[260px] sm:w-full md:h-[390px] md:w-[235px] md:p-2"
+          ? "flex-col sm:h-[260px] sm:w-full md:h-[370px] md:w-[235px] md:p-2"
           : "h-fit w-full flex-row"
       } bg-gray-100 sm:rounded-sm sm:p-1 md:rounded-lg`}
     >
@@ -66,14 +66,14 @@ export default function ProductCard({
         } flex-shrink-0 object-cover sm:rounded-sm md:rounded-lg`}
       />
       <footer className={`flex ${isGrid ? "md:w-full" : "md:w-[80%] sm:w-[40%]"} flex-col`}>
-        <h1 className="sm:line-clamp-1 md:line-clamp-2 font-semibold sm:text-sm md:text-lg">
+        <h1 className="sm:line-clamp-1 md:line-clamp-2 font-bold sm:text-sm md:text-md">
           {product.name}
         </h1>
         <p className="font-satoshi-regular line-clamp-1 opacity-60 sm:text-xs md:text-sm">
           {product.description.trim() || "Sem descrição"}
         </p>
         <section className="mt-2 flex items-center justify-between gap-6">
-          <h1 className="font-satoshi-black sm:text-lg md:text-xl">
+          <h1 className="font-satoshi-black text-lg">
             R${Number(product.price).toFixed(2).replace(".", ",")}
           </h1>
         </section>

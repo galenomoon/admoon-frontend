@@ -142,16 +142,25 @@ export default function Products() {
               Cadastrar Produto
             </Button>
           </header>
+          <div className="m-2 sm:flex md:hidden">
+            <SearchBar
+              className=" w-full self-center"
+              value={productName}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setProductName(e.target.value)
+              }
+            />
+          </div>
           <section className="scrollbar-hide h-full w-full overflow-y-auto">
-            <nav className="font-satoshi-medium sticky top-0 z-20 flex flex-col bg-white shadow-sm sm:pb-4 md:pb-0">
-              <div className="scrollbar-hide flex overflow-x-auto">
+            <nav className="font-satoshi-medium sticky top-0 z-20 flex flex-col shadow-sm sm:pb-0 md:pb-0">
+              <div className="scrollbar-hide flex overflow-x-auto bg-white">
                 <button
                   onClick={() =>
                     setCurrentCategory(undefined as unknown as ICategory)
                   }
                   className={`whitespace-nowrap border-b-4 ${!currentCategory?.id
-                      ? "border-blue-800 text-blue-800"
-                      : "border-gray-100"
+                    ? "border-blue-800 text-blue-800"
+                    : "border-gray-100"
                     } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                 >
                   Todos
@@ -161,8 +170,8 @@ export default function Products() {
                     key={index}
                     onClick={() => setCurrentCategory(category)}
                     className={`whitespace-nowrap border-b-4 ${category.id === currentCategory?.id
-                        ? "border-blue-800 text-blue-800"
-                        : "border-gray-100"
+                      ? "border-blue-800 text-blue-800"
+                      : "border-gray-100"
                       } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                   >
                     {category.name} ({category.quantityProducts})
@@ -170,7 +179,7 @@ export default function Products() {
                 ))}
                 <span className="w-full border-b-4 border-gray-100" />
               </div>
-              <header className="flex w-full justify-between gap-3 p-3">
+              <header className="flex w-full justify-between gap-3 p-3 bg-white/60 backdrop-blur-md">
                 <Pagination
                   nextPage={getProducts}
                   previousPage={getProducts}
@@ -188,8 +197,8 @@ export default function Products() {
                   <button
                     onClick={() => setIsGrid(true)}
                     className={`${isGrid
-                        ? "border-blue-800 bg-blue-800 text-white"
-                        : "bg-white hover:bg-gray-100"
+                      ? "border-blue-800 bg-blue-800 text-white"
+                      : "bg-white hover:bg-gray-100"
                       } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <SquaresFour size={20} />
@@ -197,23 +206,14 @@ export default function Products() {
                   <button
                     onClick={() => setIsGrid(false)}
                     className={`${!isGrid
-                        ? "border-blue-800 bg-blue-800 text-white"
-                        : "bg-white hover:bg-gray-100"
+                      ? "border-blue-800 bg-blue-800 text-white"
+                      : "bg-white hover:bg-gray-100"
                       } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <Rows size={20} />
                   </button>
                 </div>
               </header>
-              <div className="mx-3 sm:flex md:hidden">
-                <SearchBar
-                  className=" w-full self-center"
-                  value={productName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setProductName(e.target.value)
-                  }
-                />
-              </div>
             </nav>
             {products?.results?.length === 0 ? (
               <div className="flex h-[80%] w-full flex-col items-center justify-center">
