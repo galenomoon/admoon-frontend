@@ -72,11 +72,12 @@ export default function Products() {
     const endpoint = currentCategory?.id
       ? `/products/category/${currentCategory?.id}?page=${page}${nameQuery}`
       : `/products?page=${page}${nameQuery}`
-
+    setIsLoaded(false)
     return await api_client
       .get(endpoint)
       .then(({ data }) => setProducts(data))
       .catch((error) => console.error(error))
+      .finally(() => setIsLoaded(true))
   }
 
   function openEditModal(product: IProduct) {
