@@ -48,8 +48,8 @@ export function ProductSkeleton({ isGrid = false, length = 1 }) {
             isGrid ? "md:w-full" : "sm:w-[40%] md:w-[80%]"
           } flex-col`}
         >
-          <Skeleton className="h-4 w-[50%]" conditional={false} />
-          <Skeleton className="h-4 w-[30%]" conditional={false} />
+          <Skeleton className="!h-4 !w-[50%]" conditional={false} />
+          <Skeleton className="!h-4 !w-[30%]" conditional={false} />
         </footer>
         <section
           className={`absolute right-3 ${
