@@ -13,8 +13,8 @@ export default function Welcome() {
         imageSrc={welcome}
         imageStyle={{
           width: 564,
-          figureClassName: 'sm:h-[300px] md:h-[422px]',
-          imageClassName: 'sm:h-[200px] md:h-[370px]'
+          figureClassName: 'sm:h-[320px] md:h-[422px]',
+          imageClassName: 'sm:h-[300px] md:h-[370px]'
 
         }}
         title='Bem-vindo(a) ao painel de administração da Hi, Moon Store!'
