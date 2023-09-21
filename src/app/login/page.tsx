@@ -58,12 +58,12 @@ export default function Login() {
 
   return (
     <main className="font-satoshi-regular relative flex min-h-screen items-center justify-center sm:flex-col sm:bg-white sm:px-4 md:flex-row md:bg-[#eee] md:px-0">
-      <section className="relative flex h-screen flex-col bg-primary sm:w-[100dvw]  md:flex md:w-[50vw]">
+      <section className="relative flex overflow-hidden h-screen flex-col bg-primary sm:w-[100dvw]  md:flex md:w-[50vw]">
         <Image
           src={admoonLogo}
           alt="logo"
-          width={1000}
-          height={120}
+          width={1400}
+          height={420}
           className="absolute z-[20] mb-12 block self-center sm:top-20 sm:w-[80dvw] md:top-[40%] md:w-[70%] md:max-w-[500px]"
         />
         <Image
@@ -72,7 +72,7 @@ export default function Login() {
           objectFit="fill"
           className="absolute z-[10] animate-fade-in-up self-center sm:top-0 md:bottom-0"
         />
-        <p className="bottom-10 self-center text-white opacity-40 sm:hidden md:absolute">
+        <p className="bottom-10 self-center text-white opacity-40 sm:hidden md:block absolute">
           © {year} Admoon - Todos os direitos reservados
         </p>
       </section>
