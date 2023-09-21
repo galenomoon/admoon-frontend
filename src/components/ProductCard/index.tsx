@@ -66,7 +66,7 @@ export default function ProductCard({
         } flex-shrink-0 object-cover sm:rounded-sm md:rounded-lg`}
       />
       <footer className={`flex ${isGrid ? "md:w-full" : "md:w-[80%] sm:w-[40%]"} flex-col`}>
-        <h1 className="sm:line-clamp-1 md:line-clamp-2 font-bold sm:text-sm md:text-md">
+        <h1 className={`${isGrid ? "sm:line-clamp-1" : "sm:line-clamp-2"} md:line-clamp-2 font-bold sm:text-sm md:text-md`}>
           {product.name}
         </h1>
         <p className="font-satoshi-regular line-clamp-1 opacity-60 sm:text-xs md:text-sm">
