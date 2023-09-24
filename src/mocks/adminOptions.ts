@@ -1,6 +1,18 @@
-import { Basket, Gauge, Link, SquaresFour } from "@phosphor-icons/react"
 
-const options = [
+import { Basket, Gauge, Link, SquaresFour, Icon } from "@phosphor-icons/react"
+
+export interface IRoute {
+  Icon: Icon
+  title: string
+  href: string
+}
+
+export interface IOption {
+  title: string
+  routes: IRoute[]
+}
+
+const adminOptions = [
   {
     title: "E-COMMERCE",
     routes: [
@@ -26,6 +38,6 @@ const options = [
       },
     ],
   },
-]
+] as IOption[]
 
-export default options
+export default adminOptions

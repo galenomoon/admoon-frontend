@@ -5,18 +5,33 @@ import React, { createContext, useState, ReactNode, useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 
 //config
-import { destroyCookie } from "nookies"
+import { destroyCookie, parseCookies, setCookie } from "nookies"
 import api_client from "@/config/api_client"
+
+//styles
+import { toast } from "react-hot-toast"
 
 //interfaces
 import { IUser } from "@/interfaces/user"
 
 interface AuthContextInterface {
   currentUser: IUser
+  authMode: "superuser" | "admin" | undefined
+  setAuthMode: React.Dispatch<React.SetStateAction<"superuser" | "admin" | undefined>>
+  isLoaded: boolean
+  setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>
+  signIn: (e: React.FormEvent, user: IUser) => Promise<void>
+  signOut: () => void
 }
 
 export const AuthContext = createContext<AuthContextInterface>({
   currentUser: { email: "", password: "" },
+  authMode: "admin",
+  setAuthMode: () => {},
+  isLoaded: true,
+  setIsLoaded: () => {},
+  signIn: async () => {},
+  signOut: () => {},
 })
 
 export default function AuthContextProvider({
@@ -24,38 +39,85 @@ export default function AuthContextProvider({
 }: {
   children: ReactNode
 }) {
+  const { token } = parseCookies()
   const pathname = usePathname()
   const { push } = useRouter()
   const [currentUser, setCurrentUser] = useState<IUser>(
     null as unknown as IUser,
   )
+  const [authMode, setAuthMode] = useState<"superuser" | "admin">()
+  const [isLoaded, setIsLoaded] = useState(true)
 
   useEffect(() => {
     getCurrentUser()
   }, [])
 
   async function getCurrentUser() {
-    return await api_client.get('auth/current_user/')
+    if (!token) return signOut()
+
+    return await api_client
+      .get(`/auth/current_user/`)
       .then((res) => {
-        if (pathname === '/login') {
-          return push('/welcome')
+        if (pathname === "/login") {
+          return push("/welcome")
         }
-        if (pathname === '/' || !pathname) {
-          return push('/welcome')
+
+        if (pathname === "/" || !pathname) {
+          return push("/welcome")
         }
 
         setCurrentUser(res.data)
+        setAuthMode(res.data.role)
       })
       .catch((err) => {
         console.error(err)
-        destroyCookie(undefined, "token")
-        setCurrentUser(null as unknown as IUser)
-        push('/login')
+        signOut()
       })
   }
 
+  async function signIn(e: React.FormEvent, user: IUser) {
+    e.preventDefault()
+
+    setIsLoaded(false)
+    await api_client
+      .post(`/${authMode}s/login`, user)
+      .then(({ data }) => {
+        setCookie(undefined, "token", data.token)
+        push("/welcome")
+      })
+      .catch((err) => {
+        console.error(err)
+        if (err?.response?.status === 401) {
+          return toast.error("Email ou senha incorretos")
+        }
+        if (err?.response?.status === 404) {
+          return toast.error("Usuário não encontrado")
+        }
+        if (err?.response?.status === 500) {
+          return toast.error("Algo deu errado, tente novamente mais tarde")
+        }
+      })
+      .finally(() => setIsLoaded(true))
+  }
+
+  async function signOut() {
+    destroyCookie(undefined, "token")
+    setCurrentUser(null as unknown as IUser)
+    return push("/login")
+  }
+
   return (
-    <AuthContext.Provider value={{ currentUser }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        authMode,
+        setAuthMode,
+        isLoaded,
+        setIsLoaded,
+        signIn,
+        signOut,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
