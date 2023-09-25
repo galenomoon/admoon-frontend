@@ -12,7 +12,8 @@ import clouds from "@/assets/clouds.png"
 import { Toaster } from "react-hot-toast"
 
 //interfaces
-import { IUser } from "@/interfaces/user"
+import { IAdmin } from "@/interfaces/admin"
+import { ISuperUser } from "@/interfaces/superUser"
 
 //components
 import AuthForm from "@/components/AuthForm"
@@ -27,8 +28,10 @@ export default function Login() {
     isLoaded,
     signIn,
   } = useContext(AuthContext)
-  const [user, setUser] = useState<IUser>({ email: "", password: "" })
-
+  const [user, setUser] = useState<IAdmin | ISuperUser>({
+    email: "",
+    password: "",
+  })
 
   const date = new Date()
   const year = date.getFullYear()

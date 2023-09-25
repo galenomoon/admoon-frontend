@@ -12,15 +12,16 @@ import api_client from "@/config/api_client"
 import { toast } from "react-hot-toast"
 
 //interfaces
-import { IUser } from "@/interfaces/user"
+import { IAdmin } from "@/interfaces/admin"
+import { ISuperUser } from "@/interfaces/superUser"
 
 interface AuthContextInterface {
-  currentUser: IUser
+  currentUser: IAdmin | ISuperUser
   authMode: "superuser" | "admin" | undefined
   setAuthMode: React.Dispatch<React.SetStateAction<"superuser" | "admin" | undefined>>
   isLoaded: boolean
   setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>
-  signIn: (e: React.FormEvent, user: IUser) => Promise<void>
+  signIn: (e: React.FormEvent, user: IAdmin | ISuperUser) => Promise<void>
   signOut: () => void
 }
 
@@ -42,8 +43,8 @@ export default function AuthContextProvider({
   const { token } = parseCookies()
   const pathname = usePathname()
   const { push } = useRouter()
-  const [currentUser, setCurrentUser] = useState<IUser>(
-    null as unknown as IUser,
+  const [currentUser, setCurrentUser] = useState<IAdmin | ISuperUser>(
+    null as unknown as IAdmin | ISuperUser,
   )
   const [authMode, setAuthMode] = useState<"superuser" | "admin">()
   const [isLoaded, setIsLoaded] = useState(true)
@@ -75,7 +76,7 @@ export default function AuthContextProvider({
       })
   }
 
-  async function signIn(e: React.FormEvent, user: IUser) {
+  async function signIn(e: React.FormEvent, user: IAdmin | ISuperUser) {
     e.preventDefault()
 
     setIsLoaded(false)
@@ -102,7 +103,7 @@ export default function AuthContextProvider({
 
   async function signOut() {
     destroyCookie(undefined, "token")
-    setCurrentUser(null as unknown as IUser)
+    setCurrentUser(null as unknown as IAdmin | ISuperUser)
     return push("/login")
   }
 
