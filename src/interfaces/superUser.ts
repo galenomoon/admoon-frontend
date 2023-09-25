@@ -1,4 +1,4 @@
-export interface IUser {
+export interface ISuperUser {
   email: string;
   password: string;
   firstName?: string;
