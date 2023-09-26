@@ -3,9 +3,10 @@ import React from "react"
 
 //components
 import Welcome from "@/components/Welcome"
-import Products from "@/components/Products"
-import Categories from "@/components/Categories"
 import Clients from "@/components/Clients"
+import Products from "@/components/Products"
+import Websites from "@/components/Websites"
+import Categories from "@/components/Categories"
 
 //next
 import { useParams, useRouter } from "next/navigation"
@@ -26,6 +27,7 @@ export default function Option() {
 
   // MANAGEMENT PAGES
   if (option === "clientes") return <Clients />
+  if (option === "websites") return <Websites />
 
   return (
     <section className="flex flex-col items-center justify-center sm:h-[80dvh] sm:w-[100dvw] md:h-full md:w-full">

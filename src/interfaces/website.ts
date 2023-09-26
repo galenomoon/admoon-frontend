@@ -6,5 +6,8 @@ export interface IWebsite {
   name: string
   url: string
   adminId?: IAdmin["id"]
+  admin?: IAdmin
   users?: IUser[]
+  createdAt?: Date
+  updatedAt?: Date
 }
