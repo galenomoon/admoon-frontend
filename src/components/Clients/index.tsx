@@ -42,10 +42,10 @@ export default function Clients() {
       .finally(() => setIsLoaded(true))
   }
 
-  async function deleteCategory() {
+  async function deleteClient() {
     if (!selectedClient) return
     await api_client
-      .delete(`/clients/${selectedClient.id}`)
+      .delete(`/admins/${selectedClient.id}`)
       .then(({ data }) => {
         setClients(data)
         toast.success("Cliente excluído com sucesso")
@@ -108,7 +108,7 @@ export default function Clients() {
         </section>
       </main>
       <Alert
-        onConfirm={() => deleteCategory()}
+        onConfirm={() => deleteClient()}
         isOpen={!!selectedClient && isAlertOpen}
         close={() => close()}
         title={`Excluir cliente "${selectedClient?.firstName} ${selectedClient?.lastName}"`}
