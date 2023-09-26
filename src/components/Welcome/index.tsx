@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from "react"
+"use client"
+import React, { useContext, useEffect } from "react"
 
 //components
 import EmptyState from "../EmptyState"
@@ -10,20 +11,13 @@ import development from "@/assets/development.svg"
 //context
 import { AuthContext } from "@/contexts/authContext"
 
-//interfaces
-import { IAdmin } from "@/interfaces/admin"
-import { ISuperUser } from "@/interfaces/superUser"
-
 export default function Welcome() {
-  const { currentUser, authMode } = useContext(AuthContext)
+  const { currentUser, authMode, getCurrentUser } = useContext(AuthContext)
   const isSuperuser = authMode === "superuser"
-  const [user, setUser] = useState<IAdmin | ISuperUser>(null as unknown as IAdmin | ISuperUser)
 
   useEffect(() => {
-    if (currentUser) {
-      setUser(currentUser)
-    }
-  }, [currentUser])
+    getCurrentUser()
+  }, [])
 
   return (
     <section className="flex h-full flex-col items-center justify-center sm:h-[80dvh] md:w-full">
@@ -34,8 +28,8 @@ export default function Welcome() {
           figureClassName: "sm:h-[320px] md:h-[422px]",
           imageClassName: "sm:h-[300px] md:h-[370px]",
         }}
-        title={`Seja Bem-vindo(a) ${user?.firstName || ""} ${
-          user?.lastName || ""
+        title={`Seja Bem-vindo(a) ${currentUser?.firstName || ""} ${
+          currentUser?.lastName || ""
         }, ${
           isSuperuser
             ? "este é o painel de desenvolvedor"

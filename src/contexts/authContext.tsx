@@ -23,6 +23,7 @@ interface AuthContextInterface {
   setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>
   signIn: (e: React.FormEvent, user: IAdmin | ISuperUser) => Promise<void>
   signOut: () => void
+  getCurrentUser: () => Promise<void>
 }
 
 export const AuthContext = createContext<AuthContextInterface>({
@@ -33,6 +34,7 @@ export const AuthContext = createContext<AuthContextInterface>({
   setIsLoaded: () => {},
   signIn: async () => {},
   signOut: () => {},
+  getCurrentUser: async () => {},
 })
 
 export default function AuthContextProvider({
@@ -111,6 +113,7 @@ export default function AuthContextProvider({
     <AuthContext.Provider
       value={{
         currentUser,
+        getCurrentUser,
         authMode,
         setAuthMode,
         isLoaded,
