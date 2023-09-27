@@ -112,13 +112,13 @@ export default function ClientsList({
                     <Trash size={28} weight="duotone" />
                     <p className="font-satoshi-medium pr-1">Excluir</p>
                   </button>
-                  <Link
-                    href={`/produtos?client=${client.id}`}
-                    className="flex items-center justify-center gap-2 rounded-lg border-2 border-green-800/20 bg-green-400/20 p-1 text-green-800 duration-200 hover:opacity-60"
+                  <a
+                    href={client.websites?.[0]?.url || "#"}
+                    className={`flex items-center justify-center gap-2 rounded-lg border-2 ${client.websites?.length ? "border-green-800/20 bg-green-400/20 text-green-800" : "border-gray-800/20 bg-gray-400/20 text-gray-800 opacity-60 cursor-default"} p-1 duration-200 hover:opacity-60`}
                   >
                     <Browsers size={28} weight="duotone" />
                     <p className="font-satoshi-medium pr-1">Acessar</p>
-                  </Link>
+                  </a>
                 </td>
               </tr>
             )
