@@ -1,8 +1,5 @@
 import React from "react"
 
-//next
-import Link from "next/link"
-
 //components
 import EmptyState from "../EmptyState"
 
@@ -15,9 +12,13 @@ import { IWebsite } from "@/interfaces/website"
 interface WebsitesListProps {
   websites: IWebsite[]
   isLoaded: boolean
-  setIsModalOpen: (value: boolean) => void
+  setIsModalOpen: (value: {
+    show: boolean
+    type: "create" | "edit" | "services"
+  }) => void
   openEditModal: (website: IWebsite) => void
   openDeleteAlert: (website: IWebsite) => void
+  openServicesModal: (website: IWebsite) => void
 }
 
 export default function WebsitesList({
@@ -26,6 +27,7 @@ export default function WebsitesList({
   setIsModalOpen,
   openEditModal,
   openDeleteAlert,
+  openServicesModal,
 }: WebsitesListProps) {
   if (!isLoaded)
     return (
@@ -41,7 +43,7 @@ export default function WebsitesList({
           title="Nenhum website cadastrado"
           description="Clique no botão abaixo para criar um novo website"
           buttonLabel="Cadastrar website"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsModalOpen({ show: true, type: "create" })}
         />
       </div>
     )
@@ -78,7 +80,12 @@ export default function WebsitesList({
                 </td>
                 <td className="whitespace-nowrap p-4">{website.name}</td>
                 <td className="whitespace-nowrap p-4">
-                  <a href={website.url} target="_blank" rel="noreferrer" className="text-blue-500 underline">
+                  <a
+                    href={website.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-blue-500 underline"
+                  >
                     {website.url}
                   </a>
                 </td>
@@ -106,13 +113,13 @@ export default function WebsitesList({
                     <Trash size={28} weight="duotone" />
                     <p className="font-satoshi-medium pr-1">Excluir</p>
                   </button>
-                  <Link
-                    href={`/produtos?website=${website.id}`}
+                  <button
+                    onClick={() => openServicesModal(website)}
                     className="flex items-center justify-center gap-2 rounded-lg border-2 border-green-800/20 bg-green-400/20 p-1 text-green-800 duration-200 hover:opacity-60"
                   >
                     <Gear size={28} weight="duotone" />
                     <p className="font-satoshi-medium pr-1">Serviços</p>
-                  </Link>
+                  </button>
                 </td>
               </tr>
             )

@@ -16,6 +16,7 @@ import Alert from "../Alert"
 import Button from "../Button"
 import WebsiteForm from "../WebsiteForm"
 import WebsitesList from "../WebsitesList"
+import WebsiteServicesForm from "../WebsiteServicesForm"
 
 //interfaces
 import { IWebsite } from "@/interfaces/website"
@@ -23,7 +24,13 @@ import { IWebsite } from "@/interfaces/website"
 export default function Websites() {
   const { cadastrar } = useParams()
   const openModal = eval(cadastrar as string)
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(openModal)
+  const [isModalOpen, setIsModalOpen] = useState<{
+    show: boolean
+    type: "create" | "edit" | "services"
+  }>({
+    show: openModal,
+    type: "create",
+  })
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
   const [selectedWebsite, setSelectedWebsite] = useState<IWebsite>()
   const [websites, setWebsites] = useState<IWebsite[]>([])
@@ -57,19 +64,24 @@ export default function Websites() {
       .finally(() => close())
   }
 
-  function openDeleteAlert(client: IWebsite) {
-    setSelectedWebsite(client)
+  function openDeleteAlert(website: IWebsite) {
+    setSelectedWebsite(website)
     setIsAlertOpen(true)
   }
 
-  function openEditModal(client: IWebsite) {
-    setSelectedWebsite(client)
-    setIsModalOpen(true)
+  function openEditModal(website: IWebsite) {
+    setSelectedWebsite(website)
+    setIsModalOpen({ show: true, type: "edit" })
+  }
+
+  function openServicesModal(website: IWebsite) {
+    setSelectedWebsite(website)
+    setIsModalOpen({ show: true, type: "services" })
   }
 
   function close() {
     setIsAlertOpen(false)
-    setIsModalOpen(false)
+    setIsModalOpen({ show: false, type: "create" })
     setSelectedWebsite(undefined)
   }
 
@@ -82,7 +94,7 @@ export default function Websites() {
         <Button
           className="fixed bottom-[140px] right-7 z-[99] !h-[64px] !w-[64px] flex-shrink-0 !rounded-full md:hidden"
           disabled={!websites.length}
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsModalOpen({ show: true, type: "create" })}
         >
           <Plus size={32} color="#FFF" className="flex-shrink-0" />
         </Button>
@@ -93,7 +105,9 @@ export default function Websites() {
                 Gerenciar Websites
               </p>
               <br />
-              <Button onClick={() => setIsModalOpen(true)}>
+              <Button
+                onClick={() => setIsModalOpen({ show: true, type: "create" })}
+              >
                 Cadastrar website
               </Button>
             </header>
@@ -103,6 +117,7 @@ export default function Websites() {
               openEditModal={openEditModal}
               setIsModalOpen={setIsModalOpen}
               openDeleteAlert={openDeleteAlert}
+              openServicesModal={openServicesModal}
             />
           </div>
         </section>
@@ -117,21 +132,35 @@ export default function Websites() {
         warning="O website será excluído permanentemente."
       />
       <Modal
-        isOpen={isModalOpen}
+        isOpen={isModalOpen.show}
         close={() => close()}
-        title={selectedWebsite?.id ? "Editar website" : "Cadastrar website"}
+        title={
+          isModalOpen.type === "create"
+            ? "Cadastrar website"
+            : isModalOpen.type === "edit"
+            ? "Editar website"
+            : "Serviços"
+        }
       >
-        <WebsiteForm
-          getWebsites={getWebsites}
-          close={() => close()}
-          website={
-            selectedWebsite || {
-              id: 0,
-              name: "",
-              url: "",
+        {isModalOpen.type === "services" ? (
+          <WebsiteServicesForm
+            website={selectedWebsite as IWebsite}
+            close={() => close()}
+            getWebsites={getWebsites}
+          />
+        ) : (
+          <WebsiteForm
+            getWebsites={getWebsites}
+            close={() => close()}
+            website={
+              selectedWebsite || {
+                id: 0,
+                name: "",
+                url: "",
+              }
             }
-          }
-        />
+          />
+        )}
       </Modal>
     </>
   )
