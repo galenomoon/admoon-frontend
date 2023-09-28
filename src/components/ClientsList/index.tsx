@@ -79,7 +79,7 @@ export default function ClientsList({
                 <td className="whitespace-nowrap p-4">
                   {client.firstName} {client.lastName}
                 </td>
-                <td className="whitespace-nowrap p-4">{client.email}</td>
+                <td className="whitespace-nowrap p-4 select-all">{client.email}</td>
                 <td className="whitespace-nowrap p-4">
                   <p
                     className={`font-satoshi-medium text-sm ${

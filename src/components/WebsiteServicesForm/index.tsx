@@ -72,7 +72,7 @@ export default function WebsiteServicesForm({
       .then(() => {
         getWebsites()
         close()
-        toast.success("Servios salvos com sucesso")
+        toast.success("Serviços salvos com sucesso")
       })
       .catch((error) => {
         console.error(error)

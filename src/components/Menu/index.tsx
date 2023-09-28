@@ -40,7 +40,7 @@ export default function Menu() {
 
   useEffect(() => {
     handleOptions()
-  }, [authMode, currentWebsite])
+  }, [authMode, currentWebsite, adminOptions])
 
   function handleOptions() {
     if (authMode === "superuser") {
