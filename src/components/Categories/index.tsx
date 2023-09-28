@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 //next
 import { useParams } from "next/navigation"
@@ -20,6 +20,9 @@ import CategoriesList from "../CategoriesList"
 //interfaces
 import { ICategory } from "@/interfaces/category"
 
+//contexts
+import { WebsiteContext } from "@/contexts/websiteContext"
+
 export default function Categories() {
   const { cadastrar } = useParams()
   const openModal = eval(cadastrar as string)
@@ -29,14 +32,17 @@ export default function Categories() {
   const [categories, setCategories] = useState<ICategory[]>([])
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
+  const { currentWebsite } = useContext(WebsiteContext)
+
   useEffect(() => {
     getCategories()
-  }, [])
+  }, [currentWebsite?.id])
 
   async function getCategories() {
     setIsLoaded(false)
+    if (!currentWebsite) return
     return await api_client
-      .get("/categories")
+      .get(`websites/${currentWebsite.id}/categories`)
       .then(({ data }) => setCategories(data))
       .catch((error) => console.error(error))
       .finally(() => setIsLoaded(true))
@@ -45,7 +51,7 @@ export default function Categories() {
   async function deleteCategory() {
     if (!selectedCategory) return
     await api_client
-      .delete(`/categories/${selectedCategory.id}`)
+      .delete(`websites/${currentWebsite.id}/categories/${selectedCategory.id}`)
       .then(({ data }) => {
         setCategories(data)
         toast.success("Categoria excluída com sucesso")
