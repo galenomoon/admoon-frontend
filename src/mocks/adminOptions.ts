@@ -7,6 +7,7 @@ import {
   UserList,
   ProjectorScreenChart,
   MapPin,
+  Article,
 } from "@phosphor-icons/react"
 
 export interface IRoute {
@@ -71,6 +72,26 @@ const adminOptions = [
       },
     ],
   },
+  {
+    title: "Blog",
+    routes: [
+      {
+        Icon: Article,
+        title: "Meus Posts",
+        href: "/posts",
+      },
+      {
+        Icon: SquaresFour,
+        title: "Categorias",
+        href: "/categorias",
+      },
+      {
+        Icon: Link,
+        title: "Redes Sociais",
+        href: "/redes-sociais",
+      },
+    ],
+  }
 ] as IOption[]
 
 export default adminOptions

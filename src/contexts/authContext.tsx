@@ -57,6 +57,7 @@ export default function AuthContextProvider({
 
   async function getCurrentUser() {
     if (!token) return signOut()
+    if (currentUser?.email) return
 
     return await api_client
       .get(`/auth/current_user/`)

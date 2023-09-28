@@ -21,9 +21,11 @@ import adminOptions, { IOption } from "@/mocks/adminOptions"
 
 //context
 import { AuthContext } from "@/contexts/authContext"
+import { WebsiteContext } from "@/contexts/websiteContext"
 
 export default function Menu() {
   const { authMode } = useContext(AuthContext)
+  const { currentWebsite } = useContext(WebsiteContext)
   const [options, setOptions] = useState([] as IOption[])
   const pathname = usePathname()
   const query = useParams()
@@ -37,13 +39,24 @@ export default function Menu() {
   if (pathname === "/login") return null
 
   useEffect(() => {
+    handleOptions()
+  }, [authMode, currentWebsite])
+
+  function handleOptions() {
     if (authMode === "superuser") {
       setOptions(superUserOptions)
     }
     if (authMode === "admin") {
-      setOptions(adminOptions)
+      const activatedOptions = adminOptions?.filter(
+        (option) =>
+          currentWebsite?.services?.some(
+            (service) => service.name === option.title,
+          ),
+      )
+
+      setOptions(activatedOptions)
     }
-  }, [authMode])
+  }
 
   return (
     <nav className="h-screen w-[324px] flex-shrink-0 flex-col bg-white shadow-lg sm:hidden md:flex">
@@ -51,10 +64,10 @@ export default function Menu() {
         <Image src={admoon} width={500} height={60} alt="logo" />
       </div>
       <span className="h-[2px] w-[80%] self-center bg-black/10" />
-      <nav className="flex h-full flex-col gap-4 mt-6">
+      <nav className="mt-6 flex h-full flex-col gap-4 overflow-auto pb-10">
         {options?.map((option, index) => (
           <section key={index} className="flex flex-col">
-            <p className="font-satoshi-bold mt-2 mb-4 px-8 opacity-80 uppercase">
+            <p className="font-satoshi-bold mb-4 mt-2 px-8 uppercase opacity-80">
               {option.title}
             </p>
             {option?.routes?.map((route, route_index) => (
