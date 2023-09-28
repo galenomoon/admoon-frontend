@@ -54,7 +54,7 @@ export default function Menu() {
       <nav className="flex h-full flex-col gap-4 mt-6">
         {options?.map((option, index) => (
           <section key={index} className="flex flex-col">
-            <p className="font-satoshi-bold mt-2 mb-4 px-8 opacity-80">
+            <p className="font-satoshi-bold mt-2 mb-4 px-8 opacity-80 uppercase">
               {option.title}
             </p>
             {option?.routes?.map((route, route_index) => (

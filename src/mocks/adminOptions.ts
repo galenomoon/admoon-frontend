@@ -1,5 +1,13 @@
-
-import { Basket, Gauge, Link, SquaresFour, Icon } from "@phosphor-icons/react"
+import {
+  Basket,
+  Gauge,
+  Link,
+  SquaresFour,
+  Icon,
+  UserList,
+  ProjectorScreenChart,
+  MapPin,
+} from "@phosphor-icons/react"
 
 export interface IRoute {
   Icon: Icon
@@ -14,7 +22,7 @@ export interface IOption {
 
 const adminOptions = [
   {
-    title: "E-COMMERCE",
+    title: "Ecommerce",
     routes: [
       {
         Icon: Basket,
@@ -35,6 +43,31 @@ const adminOptions = [
         Icon: Gauge,
         title: "Estatísticas",
         href: "/estatisticas",
+      },
+    ],
+  },
+  {
+    title: "Portifólio",
+    routes: [
+      {
+        Icon: UserList,
+        title: "Informações Pessoais",
+        href: "/informacoes-pessoais",
+      },
+      {
+        Icon: MapPin,
+        title: "Endereço",
+        href: "/endereco",
+      },
+      {
+        Icon: ProjectorScreenChart,
+        title: "Projetos",
+        href: "/projetos",
+      },
+      {
+        Icon: Link,
+        title: "Redes Sociais",
+        href: "/redes-sociais",
       },
     ],
   },
