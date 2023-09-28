@@ -1,9 +1,10 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 //next
 import Link from "next/link"
 
 //interfaces
+import { IService } from "@/interfaces/service"
 import { IWebsite } from "@/interfaces/website"
 
 //config
@@ -25,65 +26,60 @@ export default function WebsiteServicesForm({
   close,
   getWebsites,
 }: IWebsiteServicesFormProps) {
+  const [services, setServices] = React.useState([])
+  const [selectedServices, setSelectedServices] = React.useState<IService[]>(
+    website.services || [],
+  )
   const [isLoaded, setIsLoaded] = React.useState<boolean>(true)
+  const [isServicesLoaded, setIsServicesLoaded] = React.useState<boolean>(true)
+
+  useEffect(() => {
+    getServices()
+  }, [])
+
+  useEffect(() => {
+    if (website.services) {
+      setSelectedServices(website.services)
+    }
+  }, [website])
+
+  async function getServices() {
+    setIsServicesLoaded(false)
+
+    await api_client
+      .get("/services/")
+      .then(({ data }) => {
+        setServices(data)
+      })
+      .catch((error) => {
+        console.error(error)
+        return toast.error("Ocorreu um erro ao carregar os serviços")
+      })
+      .finally(() => setIsServicesLoaded(true))
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const endpoint = website.id ? `/websites/${website.id}` : "/websites/"
-    const method = website.id ? "put" : "post"
-
-    if (!website.url) {
-      return toast.error("Informe a url do website")
-    }
-
-    if (!website.name) {
-      return toast.error("Informe o nome do website")
-    }
-
-    if (!website.adminId) {
-      return toast.error("Selecione o administrador do website")
+    if (!website.id) {
+      return toast.error("Tente novamente mais tarde")
     }
 
     setIsLoaded(false)
 
-    await api_client[method](endpoint, website)
+    await api_client
+      .post(`/websites/${website.id}/services`, { services: selectedServices })
       .then(() => {
         getWebsites()
-        toast.success("Website salvo com sucesso!")
         close()
+        toast.success("Servios salvos com sucesso")
       })
       .catch((error) => {
         console.error(error)
-        if (error.response.status === 409)
-          return toast.error("Website já cadastrado")
-        return toast.error("Erro ao salvar website")
+        return toast.error("Tente novamente mais tarde")
       })
       .finally(() => setIsLoaded(true))
   }
-
-  const servicesMock = [
-    {
-      id: 1,
-      name: "Ecommerce",
-      description: "Gerencie seus produtos e categorias",
-      status: false,
-    },
-    {
-      id: 2,
-      name: "Blog",
-      description: "Gerencie seus posts e categorias",
-      status: false,
-    },
-    {
-      id: 3,
-      name: "Portifólio",
-      description: "Gerencie seus projetos e categorias",
-      status: false,
-    },
-  ]
-
-  const [services, setServices] = React.useState(servicesMock)
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3">
@@ -117,35 +113,45 @@ export default function WebsiteServicesForm({
       </div>
       <div className="my-1 flex h-[2px] w-full bg-gray-300/30" />
       <div className="flex w-full flex-col gap-3 pb-3">
-        {services.map((service) => {
-          const Checkbox = service.status
-            ? ImCheckboxChecked
-            : ImCheckboxUnchecked
-          return (
-            <div key={service.id} className="flex flex-col gap-1">
-              <label
-                className="flex cursor-pointer items-center gap-2"
-                onClick={() => {
-                  setServices(
-                    services.map((s) => {
-                      if (s.id === service.id) s.status = !s.status
-                      return s
-                    }),
-                  )
-                }}
-              >
-                <Checkbox
-                  size={18}
-                  className={service.status ? "text-blue-800" : "text-gray-400"}
-                />
-                <span className="text-typography-main font-satoshi-medium">
-                  {service.name}
-                </span>
-              </label>
-              <p className="text-sm text-gray-500">{service.description}</p>
-            </div>
-          )
-        })}
+        {isServicesLoaded ? (
+          services.map((service: IService) => {
+            const isServiceSelected = selectedServices?.some(
+              (item) => item.id === service.id,
+            )
+            const Checkbox = isServiceSelected
+              ? ImCheckboxChecked
+              : ImCheckboxUnchecked
+            return (
+              <div key={service.id} className="flex flex-col gap-1">
+                <label
+                  className="flex cursor-pointer items-center gap-2"
+                  onClick={() => {
+                    setSelectedServices(
+                      isServiceSelected
+                        ? selectedServices.filter(
+                            (item) => item.id !== service.id,
+                          )
+                        : [...selectedServices, service],
+                    )
+                  }}
+                >
+                  <Checkbox
+                    size={18}
+                    className={
+                      isServiceSelected ? "text-blue-800" : "text-gray-400"
+                    }
+                  />
+                  <span className="text-typography-main font-satoshi-medium">
+                    {service.name}
+                  </span>
+                </label>
+                <p className="text-sm text-gray-500">{service.description}</p>
+              </div>
+            )
+          })
+        ) : (
+          <Spinner size={32} className="animate-spin self-center" />
+        )}
       </div>
       <div className="mt-2 flex gap-2">
         <button className="font-satoshi-medium flex h-12 w-full items-center justify-center rounded-lg bg-blue-800 px-4 text-white hover:opacity-80">

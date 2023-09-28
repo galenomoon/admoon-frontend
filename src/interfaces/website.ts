@@ -1,4 +1,5 @@
 import { IAdmin } from "./admin"
+import { IService } from "./service"
 import { IUser } from "./user"
 
 export interface IWebsite {
@@ -6,6 +7,7 @@ export interface IWebsite {
   name: string
   url: string
   adminId?: IAdmin["id"]
+  services?: IService[]
   admin?: IAdmin
   users?: IUser[]
   createdAt?: Date
