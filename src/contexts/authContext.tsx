@@ -18,7 +18,9 @@ import { ISuperUser } from "@/interfaces/superUser"
 interface AuthContextInterface {
   currentUser: IAdmin | ISuperUser
   authMode: "superuser" | "admin" | undefined
-  setAuthMode: React.Dispatch<React.SetStateAction<"superuser" | "admin" | undefined>>
+  setAuthMode: React.Dispatch<
+    React.SetStateAction<"superuser" | "admin" | undefined>
+  >
   isLoaded: boolean
   setIsLoaded: React.Dispatch<React.SetStateAction<boolean>>
   signIn: (e: React.FormEvent, user: IAdmin | ISuperUser) => Promise<void>
@@ -84,7 +86,7 @@ export default function AuthContextProvider({
 
     setIsLoaded(false)
     await api_client
-      .post(`/${authMode}s/login`, user)
+      .post(`/${authMode || "admin"}s/login`, user)
       .then(({ data }) => {
         setCookie(undefined, "token", data.token)
         push("/welcome")
