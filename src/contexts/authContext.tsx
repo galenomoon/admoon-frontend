@@ -55,6 +55,10 @@ export default function AuthContextProvider({
 
   useEffect(() => {
     getCurrentUser()
+  }, [pathname])
+
+  useEffect(() => {
+    getCurrentUser()
   }, [])
 
   async function getCurrentUser() {
