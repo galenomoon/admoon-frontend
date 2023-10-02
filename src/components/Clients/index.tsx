@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 
 //next
 import { useParams } from "next/navigation"
@@ -14,80 +14,74 @@ import { Plus } from "@phosphor-icons/react"
 import Modal from "../Modal"
 import Alert from "../Alert"
 import Button from "../Button"
-import CategoryForm from "../CategoryForm"
-import CategoriesList from "../CategoriesList"
+import ClientForm from "../ClientForm"
+import ClientsList from "../ClientsList"
 
 //interfaces
-import { ICategory } from "@/interfaces/category"
+import { IAdmin } from "@/interfaces/admin"
 
-//contexts
-import { WebsiteContext } from "@/contexts/websiteContext"
-
-export default function Categories() {
+export default function Clients() {
   const { cadastrar } = useParams()
   const openModal = eval(cadastrar as string)
   const [isModalOpen, setIsModalOpen] = useState<boolean>(openModal)
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false)
-  const [selectedCategory, setSelectedCategory] = useState<ICategory>()
-  const [categories, setCategories] = useState<ICategory[]>([])
+  const [selectedClient, setSelectedClient] = useState<IAdmin>()
+  const [clients, setClients] = useState<IAdmin[]>([])
   const [isLoaded, setIsLoaded] = useState<boolean>(false)
 
-  const { currentWebsite } = useContext(WebsiteContext)
-
   useEffect(() => {
-    getCategories()
-  }, [currentWebsite?.id])
+    getClients()
+  }, [])
 
-  async function getCategories() {
+  async function getClients() {
     setIsLoaded(false)
-    if (!currentWebsite) return
     return await api_client
-      .get(`websites/${currentWebsite.id}/categories`)
-      .then(({ data }) => setCategories(data))
+      .get("/admins")
+      .then(({ data }) => setClients(data))
       .catch((error) => console.error(error))
       .finally(() => setIsLoaded(true))
   }
 
-  async function deleteCategory() {
-    if (!selectedCategory) return
+  async function deleteClient() {
+    if (!selectedClient) return
     await api_client
-      .delete(`websites/${currentWebsite.id}/categories/${selectedCategory.id}`)
+      .delete(`/admins/${selectedClient.id}`)
       .then(({ data }) => {
-        setCategories(data)
-        toast.success("Categoria excluída com sucesso")
+        setClients(data)
+        toast.success("Cliente excluído com sucesso")
       })
       .catch((error) => {
         console.error(error)
-        toast.error("Erro ao excluir categoria")
+        toast.error("Erro ao excluir cliente")
       })
       .finally(() => close())
   }
 
-  function openDeleteAlert(category: ICategory) {
-    setSelectedCategory(category)
+  function openDeleteAlert(client: IAdmin) {
+    setSelectedClient(client)
     setIsAlertOpen(true)
   }
 
-  function openEditModal(category: ICategory) {
-    setSelectedCategory(category)
+  function openEditModal(client: IAdmin) {
+    setSelectedClient(client)
     setIsModalOpen(true)
   }
 
   function close() {
     setIsAlertOpen(false)
     setIsModalOpen(false)
-    setSelectedCategory(undefined)
+    setSelectedClient(undefined)
   }
 
   return (
     <>
       <main className="relative flex h-full w-full flex-col gap-6">
         <h1 className="font-satoshi-medium text-3xl sm:hidden md:block">
-          Categorias
+          Clientes
         </h1>
         <Button
           className="fixed bottom-[140px] right-7 z-[99] !h-[64px] !w-[64px] flex-shrink-0 !rounded-full md:hidden"
-          disabled={!categories.length}
+          disabled={!clients.length}
           onClick={() => setIsModalOpen(true)}
         >
           <Plus size={32} color="#FFF" className="flex-shrink-0" />
@@ -96,16 +90,16 @@ export default function Categories() {
           <div className="text-typography-main relative flex w-full flex-col overflow-hidden rounded-xl bg-white pb-2 shadow-lg sm:h-[80dvh] sm:w-screen md:h-[85vh] md:w-full">
             <header className="h-[68px] w-full items-center justify-between bg-white p-4 sm:hidden md:flex">
               <p className="text-typography-main font-satoshi-semibold text-xl">
-                Gerenciar Categorias
+                Gerenciar Clientes
               </p>
               <br />
               <Button onClick={() => setIsModalOpen(true)}>
-                Cadastrar Categoria
+                Cadastrar cliente
               </Button>
             </header>
-            <CategoriesList
+            <ClientsList
               isLoaded={isLoaded}
-              categories={categories}
+              clients={clients}
               openEditModal={openEditModal}
               setIsModalOpen={setIsModalOpen}
               openDeleteAlert={openDeleteAlert}
@@ -114,24 +108,24 @@ export default function Categories() {
         </section>
       </main>
       <Alert
-        onConfirm={() => deleteCategory()}
-        isOpen={!!selectedCategory && isAlertOpen}
+        onConfirm={() => deleteClient()}
+        isOpen={!!selectedClient && isAlertOpen}
         close={() => close()}
-        title={`Excluir categoria "${selectedCategory?.name}"`}
-        message="Tem certeza que deseja excluir esta categoria?"
-        warning="Todos os produtos desta categoria serão excluídos também."
+        title={`Excluir cliente "${selectedClient?.firstName} ${selectedClient?.lastName}"`}
+        message="Tem certeza que deseja excluir este cliente?"
+        warning="O acesso aos websites deste cliente será excluído também."
       />
       <Modal
         isOpen={isModalOpen}
         close={() => close()}
         title={
-          selectedCategory?.id ? "Editar categoria" : "Cadastrar categoria"
+          selectedClient?.id ? "Editar cliente" : "Cadastrar cliente"
         }
       >
-        <CategoryForm
-          getCategories={getCategories}
+        <ClientForm
+          getClients={getClients}
           close={() => close()}
-          category={selectedCategory || { id: 0, name: "" }}
+          client={selectedClient || { id: 0, firstName: "", lastName: "", email: "", password: "" }}
         />
       </Modal>
     </>

@@ -1,27 +1,30 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react"
 
 //next
-import Image from "next/image";
+import Image from "next/image"
 
 //interfaces
-import { IImage } from "@/interfaces/image";
-import { IProduct } from "@/interfaces/product";
-import { ICategory } from "@/interfaces/category";
+import { IImage } from "@/interfaces/image"
+import { IProduct } from "@/interfaces/product"
+import { ICategory } from "@/interfaces/category"
 
 //config
-import api_client from "@/config/api_client";
+import api_client from "@/config/api_client"
 
 //styles
-import { toast } from "react-hot-toast";
-import { HiPlusSm } from "react-icons/hi";
-import { IoMdClose } from "react-icons/io";
-import { Spinner } from "@phosphor-icons/react";
+import { toast } from "react-hot-toast"
+import { HiPlusSm } from "react-icons/hi"
+import { IoMdClose } from "react-icons/io"
+import { Spinner } from "@phosphor-icons/react"
+
+//contexts
+import { WebsiteContext } from "@/contexts/websiteContext"
 
 interface ProductFormProps {
-  product: IProduct;
-  close: () => void;
-  getAll: () => void;
-  categories: ICategory[];
+  product: IProduct
+  close: () => void
+  getAll: () => void
+  categories: ICategory[]
 }
 
 export default function ProductForm({
@@ -30,127 +33,137 @@ export default function ProductForm({
   close,
   getAll,
 }: ProductFormProps) {
-  const input_ref = useRef<HTMLInputElement>(null);
-  const [imagesToDelete, setImagesToDelete] = React.useState<IImage["id"][]>(
-    []
-  );
+  const { currentWebsite } = useContext(WebsiteContext)
+  const input_ref = useRef<HTMLInputElement>(null)
+  const [imagesToDelete, setImagesToDelete] = React.useState<IImage["id"][]>([])
   const [images, setImages] = React.useState<IImage[]>(
-    productByProp.images || []
-  );
+    productByProp.images || [],
+  )
   const [product, setProduct] = React.useState<IProduct>({
     ...productByProp,
-  });
-  const [isLoaded, setIsLoaded] = React.useState<boolean>(true);
+  })
+  const [isLoaded, setIsLoaded] = React.useState<boolean>(true)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsLoaded(false);
+    event.preventDefault()
+    setIsLoaded(false)
     try {
-      await submitProduct();
+      await submitProduct()
     } catch (error) {
-      console.error(error);
-      toast.error("Erro ao salvar produto");
+      console.error(error)
+      toast.error("Erro ao salvar produto")
     } finally {
-      setIsLoaded(true);
+      setIsLoaded(true)
     }
   }
 
   async function submitProduct() {
-    const endpoint = product.id ? `/products/${product.id}` : "/products";
-    const method = product.id ? "put" : "post";
+    const endpoint = product.id ? `/products/${product.id}` : "/products"
+    const method = product.id ? "put" : "post"
     const payload = {
       ...product,
       price: Number(String(product.price).replace(/\D/g, "")) / 100,
-    };
+    }
 
     if (!payload.name) {
-      return toast.error("Preencha o nome do produto");
+      return toast.error("Preencha o nome do produto")
     }
     if (!payload.description) {
-      return toast.error("Preencha a descrição do produto");
+      return toast.error("Preencha a descrição do produto")
     }
     if (!payload.price) {
-      return toast.error("Preencha o preço do produto");
+      return toast.error("Preencha o preço do produto")
     }
     if (!payload.categoryId) {
-      return toast.error("Selecione uma categoria");
+      return toast.error("Selecione uma categoria")
     }
     if (!images.length) {
-      return toast.error("Adicione pelo menos uma imagem ao produto");
+      return toast.error("Adicione pelo menos uma imagem ao produto")
     }
 
-    return await api_client[method](endpoint, payload)
+    return await api_client[method](
+      `websites/${currentWebsite.id}` + endpoint,
+      payload,
+    )
       .then(async ({ data }) => {
         try {
-          await handleImages(data as IProduct);
+          await handleImages(data as IProduct)
         } catch (error) {
-          console.error(error);
-          toast.error("Erro ao salvar imagens");
+          console.error(error)
+          toast.error("Erro ao salvar imagens")
         } finally {
-          getAll();
-          toast.success("Produto salvo com sucesso!");
-          close();
+          getAll()
+          toast.success("Produto salvo com sucesso!")
+          close()
         }
       })
-      .catch(console.error);
+      .catch(console.error)
   }
 
   async function handleImages(product: IProduct) {
-    const hasNewImages = images?.some((image) => !image.id);
-    if (!hasNewImages) return await deleteImages();
-    await uploadImages(product);
+    const hasNewImages = images?.some((image) => !image.id)
+    if (!hasNewImages) return await deleteImages()
+    await uploadImages(product)
   }
 
   async function uploadImages(product: IProduct) {
     const requests = images.map(async (image) => {
-      if (image.id) return;
-      const formData = new FormData();
-      formData.append("image", image as unknown as File);
+      if (image.id) return
+      const formData = new FormData()
+      formData.append("image", image as unknown as File)
       await api_client.post(`/images/${product.id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
-    });
-    return await Promise.all(requests).catch(console.error);
+      })
+    })
+    return await Promise.all(requests).catch(console.error)
   }
 
   async function deleteImages() {
     if (imagesToDelete.length) {
       const deleteRequests = imagesToDelete.map(async (id) => {
-        return await api_client.delete(`/images/${id}`);
-      });
-      return await Promise.all(deleteRequests).catch(console.error);
+        return await api_client.delete(`/images/${id}`)
+      })
+      return await Promise.all(deleteRequests).catch(console.error)
     }
   }
 
   function currencyFormat(value?: string | number) {
-    const isNumber = typeof value === "number";
-    const number = Number(`${isNumber ? value * 100 : value}`?.replace(/\D/g, ""));
-    return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(number / 100);
+    const isNumber = typeof value === "number"
+    const number = Number(
+      `${isNumber ? value * 100 : value}`?.replace(/\D/g, ""),
+    )
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(number / 100)
   }
 
   function handleRemoveImage(index: number) {
     if (product.id && images[index]?.id) {
-      setImagesToDelete([...imagesToDelete, images[index].id]);
+      setImagesToDelete([...imagesToDelete, images[index].id])
     }
-    return setImages(images.filter((_, i) => i !== index));
+    return setImages(images.filter((_, i) => i !== index))
   }
 
   function handleSetFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    const image = e?.target?.files as unknown as IImage[];
-    setImages([...images, ...image] as unknown as IImage[]);
+    const image = e?.target?.files as unknown as IImage[]
+    setImages([...images, ...image] as unknown as IImage[])
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:w-full h-fit overflow-auto md:w-full pb-3">
+    <form
+      onSubmit={handleSubmit}
+      className="flex h-fit flex-col gap-4 overflow-auto pb-3 sm:w-full md:w-full"
+    >
       <section
         id="images"
-        className="flex flex-col gap-4 overflow-hidden w-full border-y-[1.6px] border-typography-black/10 pb-4 pt-6"
+        className="border-typography-black/10 flex w-full flex-col gap-4 overflow-hidden border-y-[1.6px] pb-4 pt-6"
       >
-        <aside className="flex gap-3 items-center w-full justify-between">
-          <article className="flex flex-col text-start justify-center">
-            <p className="font-semibold text-2xl">Anexar imagens</p>
+        <aside className="flex w-full items-center justify-between gap-3">
+          <article className="flex flex-col justify-center text-start">
+            <p className="text-2xl font-semibold">Anexar imagens</p>
             <p className="text-typography-light dark:text-dark-typography-light">
               Adicione imagens ao produto
             </p>
@@ -158,18 +171,18 @@ export default function ProductForm({
           <button
             type="button"
             onClick={() => input_ref?.current?.click()}
-            className="flex bg-blue-600/40 items-center w-12 h-12 hover:opacity-80 duration-150 justify-center p-2 rounded-xl"
+            className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/40 p-2 duration-150 hover:opacity-80"
           >
-            <HiPlusSm size={32} className="text-blue-600 cursor-pointer" />
+            <HiPlusSm size={32} className="cursor-pointer text-blue-600" />
           </button>
         </aside>
         <div className="flex flex-col">
-          <div className="overflow-x-auto flex">
-            <div className="flex gap-2 w-fit">
+          <div className="flex overflow-x-auto">
+            <div className="flex w-fit gap-2">
               {images?.map((image, index) => (
                 <div
                   key={index}
-                  className="duration-200 relative cursor-pointer md:w-[88px] group md:h-[88px] sm:w-[80px] sm:h-[80px] rounded-2xl"
+                  className="group relative cursor-pointer rounded-2xl duration-200 sm:h-[80px] sm:w-[80px] md:h-[88px] md:w-[88px]"
                 >
                   <Image
                     src={
@@ -180,27 +193,27 @@ export default function ProductForm({
                     alt={product?.name || ""}
                     width={80}
                     height={80}
-                    className="md:w-[80px] md:h-[80px] sm:w-[80px] sm:h-[80px] object-cover rounded-2xl"
+                    className="rounded-2xl object-cover sm:h-[80px] sm:w-[80px] md:h-[80px] md:w-[80px]"
                   />
-                  <div className="flex absolute -top-0 right-0 flex-col items-end justify-start w-full h-full">
+                  <div className="absolute -top-0 right-0 flex h-full w-full flex-col items-end justify-start">
                     <IoMdClose
                       title="Excluir Arquivo"
                       size={24}
                       onClick={() => handleRemoveImage(index)}
-                      className="text-blue-600 bg-blue-200 hover:bg-blue-600 font-medium hover:text-blue-200 rounded-full p-1 duration-100 cursor-pointer"
+                      className="cursor-pointer rounded-full bg-blue-200 p-1 font-medium text-blue-600 duration-100 hover:bg-blue-600 hover:text-blue-200"
                     />
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          <div className="flex md:flex-row sm:flex-col items-center sm:gap-2 md:gap-4">
+          <div className="flex items-center sm:flex-col sm:gap-2 md:flex-row md:gap-4">
             <input
               ref={input_ref}
               type="file"
               multiple={true}
               accept="image/png , image/jpeg , image/jpg"
-              className="absolute inset-0 w-full h-full opacity-0 invisible"
+              className="invisible absolute inset-0 h-full w-full opacity-0"
               onChange={handleSetFiles}
             />
           </div>
@@ -208,7 +221,7 @@ export default function ProductForm({
       </section>
       <section
         id="productDetails"
-        className="flex flex-col gap-2 flex-shrink-0"
+        className="flex flex-shrink-0 flex-col gap-2"
       >
         <label className="flex flex-col gap-1">
           <span className="text-typography-main font-satoshi-medium">
@@ -222,7 +235,7 @@ export default function ProductForm({
             onChange={(e) =>
               setProduct((product) => ({ ...product, name: e.target.value }))
             }
-            className="border border-background-gray/20 rounded-lg px-4 py-2"
+            className="border-background-gray/20 rounded-lg border px-4 py-2"
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -240,7 +253,7 @@ export default function ProductForm({
                 description: e.target.value,
               }))
             }
-            className="border border-background-gray/20 rounded-lg px-4 py-2"
+            className="border-background-gray/20 rounded-lg border px-4 py-2"
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -258,7 +271,7 @@ export default function ProductForm({
                 price: currencyFormat(e.target.value),
               }))
             }
-            className="border border-background-gray/20 rounded-lg px-4 py-2"
+            className="border-background-gray/20 rounded-lg border px-4 py-2"
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -274,7 +287,7 @@ export default function ProductForm({
                 categoryId: Number(e.target.value),
               }))
             }
-            className="border border-background-gray/20 bg-white rounded-lg px-4 sm:h-[40px] py-2"
+            className="border-background-gray/20 rounded-lg border bg-white px-4 py-2 sm:h-[40px]"
           >
             <option value={undefined}>Selecione uma categoria</option>
             {categories?.map((category) => (
@@ -284,11 +297,11 @@ export default function ProductForm({
             ))}
           </select>
         </label>
-        <div className="flex mt-6 gap-2">
+        <div className="mt-6 flex gap-2">
           <button
             type="submit"
             disabled={!isLoaded}
-            className="bg-blue-800 disabled:opacity-80 flex items-center justify-center hover:opacity-80 text-white w-full px-4 h-12 rounded-lg font-satoshi-medium"
+            className="font-satoshi-medium flex h-12 w-full items-center justify-center rounded-lg bg-blue-800 px-4 text-white hover:opacity-80 disabled:opacity-80"
           >
             {isLoaded ? (
               "Salvar"
@@ -299,12 +312,12 @@ export default function ProductForm({
           <button
             onClick={close}
             type="button"
-            className="bg-gray-200 hover:opacity-80 w-full text-typography-main px-4 py-2 rounded-lg font-satoshi-medium"
+            className="text-typography-main font-satoshi-medium w-full rounded-lg bg-gray-200 px-4 py-2 hover:opacity-80"
           >
             Cancelar
           </button>
         </div>
       </section>
     </form>
-  );
+  )
 }

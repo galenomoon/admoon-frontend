@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 //next
 import { useParams, useRouter } from "next/navigation"
@@ -27,7 +27,11 @@ import { Plus, Rows, SquaresFour } from "@phosphor-icons/react"
 //hooks
 import { useDebounce } from "@/hooks/useDebounce"
 
+//contexts
+import { WebsiteContext } from "@/contexts/websiteContext"
+
 export default function Products() {
+  const { currentWebsite } = useContext(WebsiteContext)
   const { category } = useParams()
   const { push } = useRouter()
 
@@ -50,23 +54,25 @@ export default function Products() {
 
   useEffect(() => {
     getCategories()
-  }, [])
+  }, [currentWebsite])
 
   useEffect(() => {
     getProducts()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentCategory, debouncedSearch])
+  }, [currentCategory, debouncedSearch, currentWebsite])
 
   async function getCategories() {
+    if (!currentWebsite?.id) return
     setIsLoaded(false)
     return await api_client
-      .get("/categories")
+      .get(`websites/${currentWebsite?.id}/categories`)
       .then(({ data }) => setCategories(data))
       .catch((error) => console.error(error))
       .finally(() => setIsLoaded(true))
   }
 
   async function getProducts(page = 1) {
+    if (!currentWebsite?.id) return
     const nameQuery = debouncedSearch ? `&q=${debouncedSearch}` : ""
 
     const endpoint = currentCategory?.id
@@ -74,7 +80,7 @@ export default function Products() {
       : `/products?page=${page}${nameQuery}`
     setIsLoaded(false)
     return await api_client
-      .get(endpoint)
+      .get(`websites/${currentWebsite?.id}` + endpoint)
       .then(({ data }) => setProducts(data))
       .catch((error) => console.error(error))
       .finally(() => setIsLoaded(true))
@@ -93,7 +99,7 @@ export default function Products() {
   function deleteProduct() {
     if (!selectedProduct) return
     api_client
-      .delete(`/products/${selectedProduct.id}`)
+      .delete(`websites/${currentWebsite.id}/products/${selectedProduct.id}`)
       .then(({ data }) => {
         setProducts(data)
         toast.success("Produto excluído com sucesso")
@@ -159,10 +165,11 @@ export default function Products() {
                   onClick={() =>
                     setCurrentCategory(undefined as unknown as ICategory)
                   }
-                  className={`whitespace-nowrap border-b-4 ${!currentCategory?.id
-                    ? "border-blue-800 text-blue-800"
-                    : "border-gray-100"
-                    } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
+                  className={`whitespace-nowrap border-b-4 ${
+                    !currentCategory?.id
+                      ? "border-blue-800 text-blue-800"
+                      : "border-gray-100"
+                  } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                 >
                   Todos
                 </button>
@@ -170,17 +177,18 @@ export default function Products() {
                   <button
                     key={index}
                     onClick={() => setCurrentCategory(category)}
-                    className={`whitespace-nowrap border-b-4 ${category.id === currentCategory?.id
-                      ? "border-blue-800 text-blue-800"
-                      : "border-gray-100"
-                      } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
+                    className={`whitespace-nowrap border-b-4 ${
+                      category.id === currentCategory?.id
+                        ? "border-blue-800 text-blue-800"
+                        : "border-gray-100"
+                    } w-fit rounded-t-lg px-6 py-3 duration-300 hover:bg-[#eee]/60`}
                   >
                     {category.name} ({category.quantityProducts})
                   </button>
                 ))}
                 <span className="w-full border-b-4 border-gray-100" />
               </div>
-              <header className="flex w-full justify-between gap-3 p-3 bg-white/60 backdrop-blur-md">
+              <header className="flex w-full justify-between gap-3 bg-white/60 p-3 backdrop-blur-md">
                 <Pagination
                   nextPage={getProducts}
                   previousPage={getProducts}
@@ -197,19 +205,21 @@ export default function Products() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsGrid(true)}
-                    className={`${isGrid
-                      ? "border-blue-800 bg-blue-800 text-white"
-                      : "bg-white hover:bg-gray-100"
-                      } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
+                    className={`${
+                      isGrid
+                        ? "border-blue-800 bg-blue-800 text-white"
+                        : "bg-white hover:bg-gray-100"
+                    } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <SquaresFour size={20} />
                   </button>
                   <button
                     onClick={() => setIsGrid(false)}
-                    className={`${!isGrid
-                      ? "border-blue-800 bg-blue-800 text-white"
-                      : "bg-white hover:bg-gray-100"
-                      } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
+                    className={`${
+                      !isGrid
+                        ? "border-blue-800 bg-blue-800 text-white"
+                        : "bg-white hover:bg-gray-100"
+                    } font-satoshi-medium flex h-[40px] w-[40px] flex-shrink-0 items-center justify-center rounded-lg border-2 duration-200`}
                   >
                     <Rows size={20} />
                   </button>
