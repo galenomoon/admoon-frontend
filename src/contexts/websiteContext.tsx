@@ -11,11 +11,11 @@ import React, {
 import api_client from "@/config/api_client"
 
 //interfaces
+import { IAdmin } from "@/interfaces/admin"
 import { IWebsite } from "@/interfaces/website"
 
 //context
 import { AuthContext } from "./authContext"
-import { IAdmin } from "@/interfaces/admin"
 
 interface WebsiteContextInterface {
   currentWebsite: IWebsite
@@ -36,7 +36,7 @@ export default function WebsiteContextProvider({
 }: {
   children: ReactNode
 }) {
-  const { currentUser } = useContext(AuthContext)
+  const { currentUser, authMode } = useContext(AuthContext)
   const adminUser = currentUser as IAdmin
   const [currentWebsite, setCurrentWebsite] = useState<IWebsite>(
     adminUser?.websites?.[0] as IWebsite,
@@ -49,7 +49,7 @@ export default function WebsiteContextProvider({
   useEffect(() => {
     if (currentUser) {
       getCurrentWebsite()
-      setWebsites(adminUser?.websites as IWebsite[])
+      getWebsites()
     }
   }, [currentUser])
 
@@ -63,6 +63,19 @@ export default function WebsiteContextProvider({
         console.error(err)
       })
       .finally(() => setIsLoaded(true))
+  }
+
+  async function getWebsites() {
+    if (authMode === "admin") {
+      setWebsites(adminUser?.websites as IWebsite[])
+      return
+    }
+
+    if (authMode === "superuser") {
+      return await api_client.get("/websites/").then(({ data }) => {
+        setWebsites(data)
+      })
+    }
   }
 
   return (
