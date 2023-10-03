@@ -13,6 +13,7 @@ import api_client from "@/config/api_client"
 
 //styles
 import { toast } from "react-hot-toast"
+import { AnimatePresence, Reorder, motion } from "framer-motion"
 import { HiPlusSm } from "react-icons/hi"
 import { IoMdClose } from "react-icons/io"
 import { Spinner } from "@phosphor-icons/react"
@@ -148,6 +149,10 @@ export default function ProductForm({
   }
 
   function handleSetFiles(e: React.ChangeEvent<HTMLInputElement>) {
+    if (Array.from(e?.target?.files as unknown as FileList).length > 6) {
+      return toast.error("Você só pode adicionar até 6 imagens")
+    }
+
     const image = e?.target?.files as unknown as IImage[]
     setImages([...images, ...image] as unknown as IImage[])
   }
@@ -163,9 +168,9 @@ export default function ProductForm({
       >
         <aside className="flex w-full items-center justify-between gap-3">
           <article className="flex flex-col justify-center text-start">
-            <p className="text-2xl font-semibold">Anexar imagens</p>
-            <p className="text-typography-light dark:text-dark-typography-light">
-              Adicione imagens ao produto
+            <p className="text-xl font-semibold">Anexar imagens</p>
+            <p className="text-typography-light opacity-60">
+              Adicione imagens ao produto (máximo 6)
             </p>
           </article>
           <button
@@ -177,14 +182,25 @@ export default function ProductForm({
           </button>
         </aside>
         <div className="flex flex-col">
-          <div className="flex overflow-x-auto">
-            <div className="flex w-fit gap-2">
+          <Reorder.Group
+            axis="x"
+            values={images}
+            className="scrollbar-hide flex gap-2 sm:w-full md:w-[500px]"
+            onReorder={setImages}
+            layoutScroll
+            style={{ overflowX: "scroll" }}
+          >
+            <AnimatePresence>
               {images?.map((image, index) => (
-                <div
-                  key={index}
-                  className="group relative cursor-pointer rounded-2xl duration-200 sm:h-[80px] sm:w-[80px] md:h-[88px] md:w-[88px]"
+                <Reorder.Item
+                  key={image.id || image?.name || index}
+                  value={image}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="group relative flex flex-shrink-0 !cursor-move items-center justify-center overflow-hidden rounded-lg first:border-2 first:border-blue-600 sm:h-[80px] sm:w-[80px] md:h-[88px] md:w-[88px]"
                 >
-                  <Image
+                  <motion.img
                     src={
                       !image?.url
                         ? URL.createObjectURL(image as unknown as Blob)
@@ -193,26 +209,39 @@ export default function ProductForm({
                     alt={product?.name || ""}
                     width={80}
                     height={80}
-                    className="rounded-2xl object-cover sm:h-[80px] sm:w-[80px] md:h-[80px] md:w-[80px]"
-                  />
-                  <div className="absolute -top-0 right-0 flex h-full w-full flex-col items-end justify-start">
+                    className="h-full w-full cursor-move bg-gray-200 object-cover"
+                  ></motion.img>
+                  <motion.button
+                    type="button"
+                    className="absolute right-1 top-1 flex h-full w-full flex-col items-end justify-start"
+                  >
                     <IoMdClose
                       title="Excluir Arquivo"
-                      size={24}
+                      size={20}
                       onClick={() => handleRemoveImage(index)}
-                      className="cursor-pointer rounded-full bg-blue-200 p-1 font-medium text-blue-600 duration-100 hover:bg-blue-600 hover:text-blue-200"
+                      className="cursor-pointer rounded-full bg-blue-600 p-1 font-medium text-white duration-100 hover:bg-blue-600 hover:text-blue-200"
                     />
-                  </div>
-                </div>
+                  </motion.button>
+                  {index === 0 && (
+                    <section className="absolute bottom-0 left-0 flex h-[26px] w-full items-center justify-center rounded-t-sm bg-blue-600/80">
+                      <p className="font-satoshi-medium text-xs text-white">
+                        Foto de capa
+                      </p>
+                    </section>
+                  )}
+                </Reorder.Item>
               ))}
-            </div>
-          </div>
+            </AnimatePresence>
+          </Reorder.Group>
+
           <div className="flex items-center sm:flex-col sm:gap-2 md:flex-row md:gap-4">
             <input
               ref={input_ref}
               type="file"
               multiple={true}
               accept="image/png , image/jpeg , image/jpg"
+              max={6}
+              maxLength={6}
               className="invisible absolute inset-0 h-full w-full opacity-0"
               onChange={handleSetFiles}
             />
