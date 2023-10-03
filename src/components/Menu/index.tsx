@@ -115,7 +115,7 @@ export default function Menu() {
           )}
         </div>
         {isOpened && (
-          <div className="absolute z-[99] mt-2 flex w-[85%] flex-col rounded-xl bg-white pb-3 shadow-lg max-h-[400px] overflow-y-scroll">
+          <div className="absolute z-[99] mt-2 flex max-h-[400px] w-[85%] flex-col overflow-y-scroll rounded-xl bg-white pb-3 shadow-lg">
             {websites?.map((website, index) => (
               <button
                 key={index}
