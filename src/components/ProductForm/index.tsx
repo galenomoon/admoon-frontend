@@ -20,6 +20,7 @@ import { Spinner } from "@phosphor-icons/react"
 
 //contexts
 import { WebsiteContext } from "@/contexts/websiteContext"
+import axios from "axios"
 
 interface ProductFormProps {
   product: IProduct
@@ -102,32 +103,80 @@ export default function ProductForm({
   }
 
   async function handleImages(product: IProduct) {
-    const hasNewImages = images?.some((image) => !image.id)
-    if (!hasNewImages) return await deleteImages()
+    await deleteImages()
     await uploadImages(product)
+    await shuffleImages(product)
+  }
+
+  async function shuffleImages(product: IProduct) {
+    if (!images.length) return
+    const initialImagesOrder = images.map((image) => image.id)
+    const hasOrderChanged = initialImagesOrder.some(
+      (id, index) => id !== product?.images?.[index]?.id,
+    )
+    if (!hasOrderChanged) return
+
+    const formData = new FormData()
+    for (const image of images) {
+      if (image.id) {
+        const fileImage = await convertImageToBlob(image)
+        console.log(fileImage)
+        if (fileImage) {
+          formData.append("images", fileImage as unknown as File)
+        }
+      } else {
+        formData.append("images", image as unknown as File)
+      }
+    }
+
+    return await api_client.post(`/images/shuffle/${product.id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+  }
+
+  async function convertImageToBlob(image: IImage) {
+    if (image.url) {
+      try {
+        const response = await axios.get(image.url, { responseType: "blob" })
+        return new File(
+          [response.data],
+          image.filename || "image_" + Date.now(),
+          {
+            type: "image/png",
+          },
+        )
+      } catch (error) {
+        console.error(error)
+      }
+    }
   }
 
   async function uploadImages(product: IProduct) {
-    const requests = images.map(async (image) => {
+    const hasNewImages = images?.some((image) => !image.id)
+    if (!hasNewImages) return
+    if (!images.length) return
+
+    const formData = new FormData()
+    images.forEach((image) => {
       if (image.id) return
-      const formData = new FormData()
-      formData.append("image", image as unknown as File)
-      await api_client.post(`/images/${product.id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      console.log({ File: image as unknown as File })
+      formData.append("images", image as unknown as File)
     })
-    return await Promise.all(requests).catch(console.error)
+    return await api_client.post(`/images/${product.id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
   }
 
   async function deleteImages() {
-    if (imagesToDelete.length) {
-      const deleteRequests = imagesToDelete.map(async (id) => {
-        return await api_client.delete(`/images/${id}`)
-      })
-      return await Promise.all(deleteRequests).catch(console.error)
-    }
+    if (!imagesToDelete.length) return
+    const deleteRequests = imagesToDelete.map(async (id) => {
+      return await api_client.delete(`/images/${id}`)
+    })
+    return await Promise.all(deleteRequests).catch(console.error)
   }
 
   function currencyFormat(value?: string | number) {
@@ -206,7 +255,7 @@ export default function ProductForm({
                         ? URL.createObjectURL(image as unknown as Blob)
                         : image?.url
                     }
-                    alt={product?.name || ""}
+                    alt={image?.filename || "image"}
                     width={80}
                     height={80}
                     className="h-full w-full cursor-move bg-gray-200 object-cover"
@@ -240,8 +289,6 @@ export default function ProductForm({
               type="file"
               multiple={true}
               accept="image/png , image/jpeg , image/jpg"
-              max={6}
-              maxLength={6}
               className="invisible absolute inset-0 h-full w-full opacity-0"
               onChange={handleSetFiles}
             />
