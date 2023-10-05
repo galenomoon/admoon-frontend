@@ -9,6 +9,7 @@ import { IProduct } from "@/interfaces/product"
 import { ICategory } from "@/interfaces/category"
 
 //config
+import axios from "axios"
 import api_client from "@/config/api_client"
 
 //styles
@@ -20,7 +21,6 @@ import { Spinner } from "@phosphor-icons/react"
 
 //contexts
 import { WebsiteContext } from "@/contexts/websiteContext"
-import axios from "axios"
 
 interface ProductFormProps {
   product: IProduct
@@ -120,7 +120,6 @@ export default function ProductForm({
     for (const image of images) {
       if (image.id) {
         const fileImage = await convertImageToBlob(image)
-        console.log(fileImage)
         if (fileImage) {
           formData.append("images", fileImage as unknown as File)
         }
@@ -161,7 +160,6 @@ export default function ProductForm({
     const formData = new FormData()
     images.forEach((image) => {
       if (image.id) return
-      console.log({ File: image as unknown as File })
       formData.append("images", image as unknown as File)
     })
     return await api_client.post(`/images/${product.id}`, formData, {
