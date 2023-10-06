@@ -17,7 +17,7 @@ import { toast } from "react-hot-toast"
 import { AnimatePresence, Reorder, motion } from "framer-motion"
 import { HiPlusSm } from "react-icons/hi"
 import { IoMdClose } from "react-icons/io"
-import { Spinner } from "@phosphor-icons/react"
+import { ArrowSquareOut, DownloadSimple, Spinner } from "@phosphor-icons/react"
 
 //contexts
 import { WebsiteContext } from "@/contexts/websiteContext"
@@ -55,7 +55,7 @@ export default function ProductForm({
       console.error(error)
       toast.error("Erro ao salvar produto")
     } finally {
-      setIsLoaded(true)
+      return setIsLoaded(true)
     }
   }
 
@@ -92,10 +92,8 @@ export default function ProductForm({
           await handleImages(data as IProduct)
         } catch (error) {
           console.error(error)
-          toast.error("Erro ao salvar imagens")
         } finally {
           getAll()
-          toast.success("Produto salvo com sucesso!")
           close()
         }
       })
@@ -204,9 +202,32 @@ export default function ProductForm({
     setImages([...images, ...image] as unknown as IImage[])
   }
 
+  async function downloadImages(images: IImage[]) {
+    for (const image of images) {
+      if (!image?.url) return
+      try {
+        const response = await axios.get(image.url, { responseType: "blob" })
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement("a")
+        link.href = url
+        link.setAttribute("download", image.filename || "image")
+        document.body.appendChild(link)
+        link.click()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={(e) =>
+        toast.promise(handleSubmit(e), {
+          loading: "Salvando produto...",
+          success: "Produto salvo com sucesso!",
+          error: "Erro ao salvar produto",
+        })
+      }
       className="flex h-fit flex-col gap-4 overflow-auto pb-3 sm:w-full md:w-full"
     >
       <section
@@ -247,7 +268,7 @@ export default function ProductForm({
                   exit={{ opacity: 0 }}
                   className="group relative flex flex-shrink-0 !cursor-move items-center justify-center overflow-hidden rounded-lg first:border-2 first:border-blue-600 sm:h-[80px] sm:w-[80px] md:h-[88px] md:w-[88px]"
                 >
-                  <motion.img
+                  <Image
                     src={
                       !image?.url
                         ? URL.createObjectURL(image as unknown as Blob)
@@ -257,7 +278,7 @@ export default function ProductForm({
                     width={80}
                     height={80}
                     className="h-full w-full cursor-move bg-gray-200 object-cover"
-                  ></motion.img>
+                  ></Image>
                   <motion.button
                     type="button"
                     className="absolute right-1 top-1 flex h-full w-full flex-col items-end justify-start"
@@ -291,6 +312,33 @@ export default function ProductForm({
               onChange={handleSetFiles}
             />
           </div>
+        </div>
+        <div className="flex items-center justify-between">
+          {images.length > 0 ? (
+            <button
+              type="button"
+              className="font-satoshi-medium flex items-center gap-2 self-start text-sm text-blue-600 hover:opacity-80"
+              onClick={() =>
+                toast.promise(downloadImages(images), {
+                  loading: "Baixando imagens...",
+                  success: "Imagens baixadas com sucesso!",
+                  error: "Erro ao baixar imagens",
+                })
+              }
+            >
+              <DownloadSimple size={18} />
+              <p>Baixar imagens</p>
+            </button>
+          ) : null}
+          <a
+            href={`${currentWebsite.url}produtos/${product.category?.slug}/${product.slug}`}
+            rel="noreferrer"
+            target="_blank"
+            className="font-satoshi-medium flex items-center gap-2 self-start text-sm text-blue-600 hover:opacity-80"
+          >
+            <ArrowSquareOut size={18} />
+            <p>Abrir página do produto</p>
+          </a>
         </div>
       </section>
       <section
@@ -385,6 +433,7 @@ export default function ProductForm({
           </button>
           <button
             onClick={close}
+            disabled={!isLoaded}
             type="button"
             className="text-typography-main font-satoshi-medium w-full rounded-lg bg-gray-200 px-4 py-2 hover:opacity-80"
           >
