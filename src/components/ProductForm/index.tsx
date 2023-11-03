@@ -64,7 +64,9 @@ export default function ProductForm({
     const method = product.id ? "put" : "post"
     const payload = {
       ...product,
-      price: Number(String(product.price).replace(/\D/g, "")) / 100,
+      price: String(product.price).includes("R$")
+        ? Number(String(product.price).replace(/\D/g, "")) / 100
+        : Number(String(product.price).replace(/\D/g, "")),
     }
 
     if (!payload.name) {
@@ -194,8 +196,8 @@ export default function ProductForm({
   }
 
   function handleSetFiles(e: React.ChangeEvent<HTMLInputElement>) {
-    if (Array.from(e?.target?.files as unknown as FileList).length > 6) {
-      return toast.error("Você só pode adicionar até 6 imagens")
+    if (Array.from(e?.target?.files as unknown as FileList).length > 22) {
+      return toast.error("Você só pode adicionar até 22 imagens")
     }
 
     const image = e?.target?.files as unknown as IImage[]
@@ -238,7 +240,7 @@ export default function ProductForm({
           <article className="flex flex-col justify-center text-start">
             <p className="text-xl font-semibold">Anexar imagens</p>
             <p className="text-typography-light opacity-60">
-              Adicione imagens ao produto (máximo 6)
+              Adicione imagens ao produto (máximo 22)
             </p>
           </article>
           <button
