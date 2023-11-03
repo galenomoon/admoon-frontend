@@ -7,13 +7,7 @@ import Image from "next/image"
 import { useRouter, useParams, usePathname } from "next/navigation"
 
 //styles
-import {
-  ArrowSquareOut,
-  CaretDown,
-  Control,
-  SignOut,
-  XCircle,
-} from "@phosphor-icons/react"
+import { CaretDown, SignOut, Warning, XCircle } from "@phosphor-icons/react"
 import toast from "react-hot-toast"
 
 //config
@@ -79,7 +73,7 @@ export default function Menu() {
           <div className="flex w-full flex-col justify-center">
             <div className="flex items-center justify-between gap-2">
               <p className="font-satoshi-variable flex items-center justify-center gap-2 text-lg opacity-80">
-                {currentWebsite?.id && (
+                {currentWebsite?.id && websites?.length >= 1 && (
                   <button
                     onClick={() => setCurrentWebsite({} as any)}
                     className="transition duration-300 hover:text-red-600"
@@ -106,7 +100,7 @@ export default function Menu() {
               </div>
             )}
           </div>
-          {websites?.length > 0 && (
+          {websites?.length > 1 && (
             <div className="flex flex-col items-center justify-center gap-2">
               <button onClick={() => setIsOpened(!isOpened)}>
                 <CaretDown size={20} />
@@ -154,27 +148,42 @@ export default function Menu() {
       <span className="h-[2px] w-[80%] self-center bg-black/10" />
       <nav className="mt-6 flex h-full flex-col gap-4 overflow-auto pb-10">
         <Websites />
-        {options?.map((option, index) => (
-          <section key={index} className="flex flex-col">
-            <p className="font-satoshi-bold mb-4 mt-2 px-8 uppercase opacity-80">
-              {option.title}
-            </p>
-            {option?.routes?.map((route, route_index) => (
-              <Link
-                key={route_index}
-                href={route.href}
-                className={`px-8 py-3 text-xl ${
-                  route.href === `/${query.option}`
-                    ? "border-blue-800 bg-blue-800/10 text-blue-800"
-                    : "border-transparent opacity-60 duration-300 hover:bg-[#eee]"
-                } font-satoshi-medium flex items-center gap-5 border-r-4`}
-              >
-                <route.Icon size={26} weight="duotone" />
-                <p>{route.title}</p>
-              </Link>
-            ))}
-          </section>
-        ))}
+        {options.length ? (
+          options?.map((option, index) => (
+            <section key={index} className="flex flex-col">
+              <p className="font-satoshi-bold mb-4 mt-2 px-8 uppercase opacity-80">
+                {option.title}
+              </p>
+              {option?.routes?.map((route, route_index) => (
+                <Link
+                  key={route_index}
+                  href={route.href}
+                  className={`px-8 py-3 text-xl ${
+                    route.href === `/${query.option}`
+                      ? "border-blue-800 bg-blue-800/10 text-blue-800"
+                      : "border-transparent opacity-60 duration-300 hover:bg-[#eee]"
+                  } font-satoshi-medium flex items-center gap-5 border-r-4`}
+                >
+                  <route.Icon size={26} weight="duotone" />
+                  <p>{route.title}</p>
+                </Link>
+              ))}
+            </section>
+          ))
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center text-center">
+            <Warning size={48} weight="duotone" />
+            <article className="flex flex-col">
+              <p className="font-satoshi-bold mt-2 px-8 uppercase opacity-80">
+                Nenhum serviço ativado
+              </p>
+              <p className="px-2 text-sm opacity-60">
+                Para acessar o painel de controle, entre em contato com o
+                administrador para ativar os serviços
+              </p>
+            </article>
+          </div>
+        )}
       </nav>
       <span className="h-[2px] w-[80%] self-center bg-black/10" />
       <button
