@@ -1,5 +1,10 @@
 import React from "react"
 
+//animations
+import { motion } from "framer-motion"
+import { fade } from "@/animations/fade"
+import { slide } from "@/animations/slide"
+
 interface AlertProps {
   onConfirm: () => void
   close: () => void
@@ -21,9 +26,18 @@ export default function Alert({
 }: AlertProps) {
   const [password, setPassword] = React.useState<string>("")
 
-  return !isOpen ? null : (
-    <div className="animate-fade-in max-w-screen fixed left-0 top-0 z-[901] flex h-screen max-h-screen w-screen items-center justify-center overflow-hidden bg-black bg-opacity-20 backdrop-blur-md transition-all ease-out">
-      <div className="animate-slide-in flex flex-col items-center gap-8 rounded-xl bg-white p-8 shadow-lg md:max-w-[30vw]">
+  return (
+    <motion.div
+      animate={fade(isOpen)}
+      initial={{ display: "none" }}
+      onClick={close}
+      className="max-w-screen fixed left-0 top-0 z-[901] flex h-screen max-h-screen w-screen items-center justify-center overflow-hidden bg-black bg-opacity-20 backdrop-blur-md"
+    >
+      <motion.nav
+        animate={slide(isOpen)}
+        onClick={(e) => e.stopPropagation()}
+        className="relative flex flex-col items-center gap-8 rounded-xl bg-white p-8 shadow-lg md:max-w-[30vw]"
+      >
         <div className="flex flex-col items-center">
           <h1 className="font-satoshi-medium text-center text-xl">{title}</h1>
           <p className="font-satoshi-regular mt-3 text-center text-lg opacity-80">
@@ -36,24 +50,24 @@ export default function Alert({
           )}
         </div>
         {confirmationPassword ? (
-          <div className="flex flex-col gap-1 w-full">
-            <label>
-              Para confirmar, digite o nome do website:
-            </label>
+          <div className="flex w-full flex-col gap-1">
+            <label>Para confirmar, digite o nome do website:</label>
             <input
               type="password"
               placeholder="Nome do website"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="font-satoshi-regular border w-full rounded-lg bg-gray-100 px-3 py-2"
+              className="font-satoshi-regular w-full rounded-lg border bg-gray-100 px-3 py-2"
             />
           </div>
         ) : null}
-        <div className="flex gap-4 w-full">
+        <div className="flex w-full gap-4">
           <button
             onClick={onConfirm}
-            disabled={!!confirmationPassword && (confirmationPassword !== password)}
-            className="font-satoshi-medium w-full rounded-lg disabled:bg-gray-400 bg-red-600 py-2 text-white duration-200 hover:opacity-80"
+            disabled={
+              !!confirmationPassword && confirmationPassword !== password
+            }
+            className="font-satoshi-medium w-full rounded-lg bg-red-600 py-2 text-white duration-200 hover:opacity-80 disabled:bg-gray-400"
           >
             Confirmar
           </button>
@@ -64,7 +78,7 @@ export default function Alert({
             Cancelar
           </button>
         </div>
-      </div>
-    </div>
+      </motion.nav>
+    </motion.div>
   )
 }
