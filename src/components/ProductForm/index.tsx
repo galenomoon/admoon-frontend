@@ -335,7 +335,7 @@ export default function ProductForm({
             </button>
           ) : null}
           <a
-            href={`${currentWebsite.url}produtos/${product.category?.slug}/${product.slug}`}
+            href={`${currentWebsite?.url}produtos/${product.category?.slug}/${product.slug}`}
             rel="noreferrer"
             target="_blank"
             className="font-satoshi-medium flex items-center gap-2 self-start text-sm text-blue-600 hover:opacity-80"
