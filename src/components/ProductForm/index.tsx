@@ -157,16 +157,18 @@ export default function ProductForm({
     if (!hasNewImages) return
     if (!images.length) return
 
-    const formData = new FormData()
-    images.forEach((image) => {
+    const requests = images.map(async (image) => {
+      const formData = new FormData()
       if (image.id) return
       formData.append("images", image as unknown as File)
+      return await api_client.post(`/images/${product.id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
     })
-    return await api_client.post(`/images/${product.id}`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
+
+    return await Promise.all(requests).catch(console.error)
   }
 
   async function deleteImages() {
@@ -230,7 +232,7 @@ export default function ProductForm({
           error: "Erro ao salvar produto",
         })
       }
-      className="flex h-fit flex-col gap-4 overflow-auto pb-3 sm:w-full md:w-full"
+      className="flex h-fit flex-col gap-4 sm:overflow-auto pb-3 sm:w-full md:w-full"
     >
       <section
         id="images"
@@ -424,8 +426,9 @@ export default function ProductForm({
         <div className="mt-6 flex gap-2">
           <button
             type="submit"
-            disabled={!isLoaded}
-            className="font-satoshi-medium flex h-12 w-full items-center justify-center rounded-lg bg-blue-800 px-4 text-white hover:opacity-80 disabled:opacity-80"
+            title={images.length ? "" : "Adicione pelo menos uma imagem"}
+            disabled={!isLoaded || !images.length}
+            className="font-satoshi-medium flex h-12 w-full items-center justify-center rounded-lg bg-blue-800 px-4 text-white hover:opacity-80 disabled:bg-gray-600 disabled:opacity-80"
           >
             {isLoaded ? (
               "Salvar"
