@@ -7,8 +7,10 @@ import Image from "next/image"
 import { useRouter, useParams, usePathname } from "next/navigation"
 
 //styles
-import { CaretDown, SignOut, Warning, XCircle } from "@phosphor-icons/react"
 import toast from "react-hot-toast"
+import { motion } from "framer-motion"
+import { RxHamburgerMenu } from "react-icons/rx"
+import { CaretDown, SignOut, Warning, XCircle } from "@phosphor-icons/react"
 
 //config
 import { destroyCookie } from "nookies"
@@ -26,8 +28,8 @@ import { WebsiteContext } from "@/contexts/websiteContext"
 
 export default function Menu() {
   const { authMode } = useContext(AuthContext)
-  const { currentWebsite, websites, setCurrentWebsite } =
-    useContext(WebsiteContext)
+  const { currentWebsite } = useContext(WebsiteContext)
+  const [isOpened, setIsOpened] = useState(false)
   const [options, setOptions] = useState([] as IOption[])
   const pathname = usePathname()
   const query = useParams()
@@ -64,136 +66,160 @@ export default function Menu() {
     }
   }
 
-  const [isOpened, setIsOpened] = useState(false)
+  return (
+    <>
+      <button
+        onClick={() => setIsOpened(!isOpened)}
+        className="left-4 top-4 rounded-full p-2.5 shadow-lg sm:fixed md:hidden"
+      >
+        <RxHamburgerMenu size={28} />
+      </button>
+      {isOpened && (
+        <motion.section
+          onClick={() => setIsOpened(false)}
+          className="animate-fade left-0 top-0 z-[300] h-[100dvh] w-full bg-black bg-black/50 bg-opacity-20 backdrop-blur-sm sm:fixed md:hidden"
+        />
+      )}
 
-  function Websites() {
-    return (
-      <section className="h-fit w-[85%] self-center">
-        <div className="flex h-fit min-h-[80px] flex-shrink-0 justify-between rounded-xl bg-gray-100 px-3 py-2">
-          <div className="flex w-full flex-col justify-center">
-            <div className="flex items-center justify-between gap-2">
-              <p className="font-satoshi-variable flex items-center justify-center gap-2 text-lg opacity-80">
-                {currentWebsite?.id && websites?.length >= 1 && (
-                  <button
-                    onClick={() => setCurrentWebsite({} as any)}
-                    className="transition duration-300 hover:text-red-600"
+      <motion.nav
+        className={`animate-left-to-right relative h-[100dvh] w-[324px] flex-shrink-0 flex-col bg-white shadow-lg ${
+          isOpened ? "sm:fixed" : "sm:hidden"
+        } z-[400] md:flex`}
+      >
+        <div className="flex w-full items-center justify-center px-8 pb-6 pt-12">
+          <Image src={admoon} width={500} height={60} alt="logo" />
+        </div>
+        <span className="h-[2px] w-[80%] self-center bg-black/10" />
+        <div className="my-6 flex flex-col">
+          <Websites />
+        </div>
+        <nav className="flex flex-1 flex-col gap-4 overflow-auto pb-10 sm:max-h-[50vh] md:max-h-full">
+          {options.length ? (
+            options?.map((option, index) => (
+              <section key={index} className="flex flex-col">
+                <p className="font-satoshi-bold mb-4 mt-2 px-8 uppercase opacity-80">
+                  {option.title}
+                </p>
+                {option?.routes?.map((route, route_index) => (
+                  <Link
+                    key={route_index}
+                    href={route.href}
+                    className={`px-8 py-3 text-xl ${
+                      route.href === `/${query.option}`
+                        ? "border-blue-800 bg-blue-800/10 text-blue-800"
+                        : "border-transparent opacity-60 duration-300 hover:bg-[#eee]"
+                    } font-satoshi-medium flex items-center gap-5 border-r-4`}
                   >
-                    <XCircle size={18} weight="duotone" />
-                  </button>
-                )}
-                {currentWebsite?.name || "Selecione um site"}
-              </p>
+                    <route.Icon size={26} weight="duotone" />
+                    <p>{route.title}</p>
+                  </Link>
+                ))}
+              </section>
+            ))
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center text-center">
+              <Warning size={48} weight="duotone" />
+              <article className="flex flex-col">
+                <p className="font-satoshi-bold mt-2 px-8 uppercase opacity-80">
+                  Nenhum serviço ativado
+                </p>
+                <p className="px-2 text-sm opacity-60">
+                  Para acessar o painel de controle, entre em contato com o
+                  administrador para ativar os serviços
+                </p>
+              </article>
             </div>
-            {authMode === "superuser" && (
-              <p className="text-sm opacity-60">
-                {currentWebsite?.services
-                  ?.map((service) => service.name)
-                  .join(", ") || "Para acessar o painel de controle"}
-              </p>
-            )}
+          )}
+        </nav>
+        <span className="h-[2px] w-[80%] self-center bg-black/10" />
+        <button
+          onClick={handleSignOut}
+          className="flex w-full items-center justify-center gap-2 px-8 py-6 pb-12 text-red-600"
+        >
+          <SignOut size={22} weight="duotone" />
+          <p>Sair</p>
+        </button>
+      </motion.nav>
+    </>
+  )
+}
 
-            {authMode === "admin" && (
-              <div className="flex items-center gap-1 text-sm opacity-80">
-                {currentWebsite?.url
-                  ?.replace("https://", "")
-                  ?.replace("http://", "")}
-              </div>
-            )}
+export function Websites() {
+  const [isOpened, setIsOpened] = useState(false)
+  const { authMode } = useContext(AuthContext)
+  const { currentWebsite, websites, setCurrentWebsite } =
+    useContext(WebsiteContext)
+  const { push } = useRouter()
+
+  return (
+    <section className="h-fit w-[85%] self-center">
+      <div className="flex h-fit min-h-[80px] flex-shrink-0 justify-between rounded-xl bg-gray-100 px-3 py-2">
+        <div className="flex w-full flex-col justify-center">
+          <div className="flex items-center justify-between gap-2">
+            <p className="font-satoshi-variable flex items-center justify-center gap-2 text-lg opacity-80">
+              {currentWebsite?.id && websites?.length >= 1 && (
+                <button
+                  onClick={() => setCurrentWebsite({} as any)}
+                  className="transition duration-300 hover:text-red-600"
+                >
+                  <XCircle size={18} weight="duotone" />
+                </button>
+              )}
+              {currentWebsite?.name || "Selecione um site"}
+            </p>
           </div>
-          {websites?.length > 1 && (
-            <div className="flex flex-col items-center justify-center gap-2">
-              <button onClick={() => setIsOpened(!isOpened)}>
-                <CaretDown size={20} />
-              </button>
+          {authMode === "superuser" && (
+            <p className="text-sm opacity-60">
+              {currentWebsite?.services
+                ?.map((service) => service.name)
+                .join(", ") || "Para acessar o painel de controle"}
+            </p>
+          )}
+
+          {authMode === "admin" && (
+            <div className="flex items-center gap-1 text-sm opacity-80">
+              {currentWebsite?.url
+                ?.replace("https://", "")
+                ?.replace("http://", "")}
             </div>
           )}
         </div>
-        {isOpened && (
-          <div className="absolute z-[99] mt-2 flex max-h-[400px] w-[85%] flex-col overflow-y-scroll rounded-xl bg-white pb-3 shadow-lg">
-            {websites?.map((website, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  setIsOpened(false)
-                  setCurrentWebsite(website)
-                  toast.success(`Site ${website.name} selecionado`)
-                  return push(`/welcome`)
-                }}
-                className="flex w-full flex-col p-3 text-start transition duration-300 hover:bg-gray-100"
-              >
-                <p className="font-satoshi-variable text-md opacity-80">
-                  {website.name}
-                </p>
-                <p className="text-sm opacity-60">
-                  {website.services
-                    ?.map((service) => service.name)
-                    .join(", ") || "Nenhum serviço ativado"}
-                </p>
-                <p className="flex items-center gap-1 text-sm text-blue-600/80 underline opacity-80">
-                  {website.url?.replace("https://", "")?.replace("http://", "")}
-                </p>
-              </button>
-            ))}
+        {websites?.length > 1 && (
+          <div className="flex flex-col items-center justify-center gap-2">
+            <button onClick={() => setIsOpened(!isOpened)}>
+              <CaretDown size={20} />
+            </button>
           </div>
         )}
-      </section>
-    )
-  }
-
-  return (
-    <nav className="relative h-screen w-[324px] flex-shrink-0 flex-col bg-white shadow-lg sm:hidden md:flex">
-      <div className="flex w-full items-center justify-center px-8 pb-6 pt-12">
-        <Image src={admoon} width={500} height={60} alt="logo" />
       </div>
-      <span className="h-[2px] w-[80%] self-center bg-black/10" />
-      <nav className="mt-6 flex h-full flex-col gap-4 overflow-auto pb-10">
-        <Websites />
-        {options.length ? (
-          options?.map((option, index) => (
-            <section key={index} className="flex flex-col">
-              <p className="font-satoshi-bold mb-4 mt-2 px-8 uppercase opacity-80">
-                {option.title}
+      {isOpened && (
+        <div className="absolute z-[99] mt-2 flex max-h-[400px] w-[85%] flex-col overflow-y-scroll rounded-xl bg-white pb-3 shadow-lg">
+          {websites?.map((website, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setIsOpened(false)
+                setCurrentWebsite(website)
+                toast.success(`Site ${website.name} selecionado`)
+                return push(`/welcome`)
+              }}
+              className="flex w-full flex-col p-3 text-start transition duration-300 hover:bg-gray-100"
+            >
+              <p className="font-satoshi-variable text-md opacity-80">
+                {website.name}
               </p>
-              {option?.routes?.map((route, route_index) => (
-                <Link
-                  key={route_index}
-                  href={route.href}
-                  className={`px-8 py-3 text-xl ${
-                    route.href === `/${query.option}`
-                      ? "border-blue-800 bg-blue-800/10 text-blue-800"
-                      : "border-transparent opacity-60 duration-300 hover:bg-[#eee]"
-                  } font-satoshi-medium flex items-center gap-5 border-r-4`}
-                >
-                  <route.Icon size={26} weight="duotone" />
-                  <p>{route.title}</p>
-                </Link>
-              ))}
-            </section>
-          ))
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center text-center">
-            <Warning size={48} weight="duotone" />
-            <article className="flex flex-col">
-              <p className="font-satoshi-bold mt-2 px-8 uppercase opacity-80">
-                Nenhum serviço ativado
+              <p className="text-sm opacity-60">
+                {website.services?.map((service) => service.name).join(", ") ||
+                  "Nenhum serviço ativado"}
               </p>
-              <p className="px-2 text-sm opacity-60">
-                Para acessar o painel de controle, entre em contato com o
-                administrador para ativar os serviços
+              <p className="flex items-center gap-1 text-sm text-blue-600/80 underline opacity-80">
+                {website.url?.replace("https://", "")?.replace("http://", "")}
               </p>
-            </article>
-          </div>
-        )}
-      </nav>
-      <span className="h-[2px] w-[80%] self-center bg-black/10" />
-      <button
-        onClick={handleSignOut}
-        className="flex w-full items-center justify-center gap-2 px-8 py-6 pb-12 text-red-600"
-      >
-        <SignOut size={22} weight="duotone" />
-        <p>Sair</p>
-      </button>
-    </nav>
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }
 

@@ -38,7 +38,6 @@ export default async function AdminSideLayout({
       <section className="flex flex-col pt-12 sm:px-0 md:w-[calc(100vw-324px)] md:px-12">
         {children}
       </section>
-      <TabNavigation />
       <Toaster position="top-right" />
     </main>
   )

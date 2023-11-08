@@ -32,10 +32,28 @@ const config: Config = {
             opacity: "1",
             transform: "translateY(0)",
           },
+        }, 
+        "fade": {
+          "0%": {
+            opacity: "0",
+          },
+          "100%": {
+            opacity: "1",
+          },
+        },
+        "left-to-right": {
+          "0%": {
+            transform: "translateX(-20px)",
+          },
+          "100%": {
+            transform: "translateX(0)",
+          },
         },
       },
       animation: {
         "fade-in-up": "fade-in-up 1.6s ease-out",
+        "fade": "fade 0.3s ease-out",
+        "left-to-right": "left-to-right 0.3s ease-out",
       },
     },
   },
