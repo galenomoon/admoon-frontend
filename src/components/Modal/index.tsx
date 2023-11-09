@@ -33,7 +33,7 @@ export default function Modal({
       <motion.nav
         animate={slide(isOpen)}
         onClick={(e) => e.stopPropagation()}
-        className={`relative flex w-[500px] flex-col items-center gap-8 overflow-y-auto bg-white p-8 shadow-lg transition-all duration-300 ease-out sm:h-[100dvh] sm:max-h-[100dvh] sm:w-[100dvw] sm:self-start sm:rounded-none md:h-fit md:max-h-[90vh] md:w-fit md:min-w-[500px] md:self-center md:rounded-xl ${
+        className={`relative flex w-[500px] flex-col items-center gap-8 overflow-y-auto bg-white p-8 shadow-lg transition-all duration-300 ease-out sm:h-[100dvh] sm:max-h-[100dvh] sm:w-[100dvw] sm:self-start sm:rounded-none md:h-fit md:max-h-[99vh] md:w-fit md:min-w-[500px] md:self-center md:rounded-xl ${
           className ? className : ""
         }`}
       >

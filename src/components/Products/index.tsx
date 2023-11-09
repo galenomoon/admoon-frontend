@@ -274,7 +274,7 @@ export default function Products() {
       <Modal
         isOpen={isModalOpen}
         close={() => close()}
-        className="  md:w-[600px] "
+        className="md:w-[600px]"
         title={selectedProduct?.id ? "Editar produto" : "Adicionar produto"}
       >
         <ProductForm

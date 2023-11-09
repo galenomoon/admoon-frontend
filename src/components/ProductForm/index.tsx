@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from "react"
+import React, { useContext, useEffect, useRef } from "react"
 
 //next
 import Image from "next/image"
@@ -45,6 +45,12 @@ export default function ProductForm({
     ...productByProp,
   })
   const [isLoaded, setIsLoaded] = React.useState<boolean>(true)
+
+  useEffect(() => {
+    setProduct({ ...productByProp })
+    setImages(productByProp.images || [])
+    setImagesToDelete([])
+  }, [productByProp])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -232,7 +238,7 @@ export default function ProductForm({
           error: "Erro ao salvar produto",
         })
       }
-      className="flex h-fit flex-col gap-4 sm:overflow-auto pb-3 sm:w-full md:w-full"
+      className="flex h-fit flex-col gap-4 md:overflow-visible sm:overflow-auto pb-3 sm:w-full md:w-full"
     >
       <section
         id="images"
