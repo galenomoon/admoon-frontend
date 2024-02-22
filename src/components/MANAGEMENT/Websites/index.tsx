@@ -11,12 +11,12 @@ import { toast } from "react-hot-toast"
 import { Plus } from "@phosphor-icons/react"
 
 //components
-import Modal from "../Modal"
-import Alert from "../Alert"
-import Button from "../Button"
-import WebsiteForm from "../WebsiteForm"
-import WebsitesList from "../WebsitesList"
-import WebsiteServicesForm from "../WebsiteServicesForm"
+import Modal from "../../Modal"
+import Alert from "../../Alert"
+import Button from "../../Button"
+import WebsiteForm from "../../WebsiteForm"
+import WebsitesList from "../../WebsitesList"
+import WebsiteServicesForm from "../../WebsiteServicesForm"
 
 //interfaces
 import { IWebsite } from "@/interfaces/website"

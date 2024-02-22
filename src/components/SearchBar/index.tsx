@@ -12,7 +12,7 @@ export default function SearchBar({ className, ...props }: ISearchBarProps) {
       <input
         {...props}
         className="w-full bg-gray-100 focus:outline-none"
-        placeholder="Pesquisar produto..."
+        placeholder={props?.placeholder || "Pesquisar produto..."}
       />
     </div>
   )

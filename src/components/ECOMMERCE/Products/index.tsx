@@ -11,14 +11,14 @@ import { ICategory } from "@/interfaces/category"
 import api_client from "@/config/api_client"
 
 //components
-import Modal from "../Modal"
-import Alert from "../Alert"
-import Button from "../Button"
-import SearchBar from "../SearchBar"
-import Pagination from "../Pagination"
-import EmptyState from "../EmptyState"
-import ProductList from "../ProductList"
-import ProductForm from "../ProductForm"
+import Modal from "../../Modal"
+import Alert from "../../Alert"
+import Button from "../../Button"
+import SearchBar from "../../SearchBar"
+import Pagination from "../../Pagination"
+import EmptyState from "../../EmptyState"
+import ProductList from "../../ProductList"
+import ProductForm from "../../ProductForm"
 
 //styles
 import { toast } from "react-hot-toast"

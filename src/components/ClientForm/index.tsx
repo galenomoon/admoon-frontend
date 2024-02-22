@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 
 //interfaces
 import { IAdmin } from "@/interfaces/admin"
@@ -23,6 +23,10 @@ export default function ClientForm({
 }: ClientFormProps) {
   const [newClient, setNewClient] = React.useState<IAdmin>(client)
   const [isLoaded, setIsLoaded] = React.useState<boolean>(true)
+
+  useEffect(() => {
+    setNewClient(client)
+  }, [client])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()

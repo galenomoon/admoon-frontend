@@ -184,7 +184,7 @@ export function Websites() {
             </div>
           )}
         </div>
-        {websites?.length > 1 && (
+        {websites?.length > 0 && (
           <div className="flex flex-col items-center justify-center gap-2">
             <button onClick={() => setIsOpened(!isOpened)}>
               <CaretDown size={20} />

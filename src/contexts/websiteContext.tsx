@@ -22,11 +22,13 @@ interface WebsiteContextInterface {
   setCurrentWebsite: React.Dispatch<React.SetStateAction<IWebsite>>
   websites: IWebsite[]
   isLoaded: boolean
+  getCurrentWebsite: () => Promise<void>
 }
 
 export const WebsiteContext = createContext<WebsiteContextInterface>({
   currentWebsite: { id: 0, name: "", url: "" },
   setCurrentWebsite: () => {},
+  getCurrentWebsite: async () => {},
   websites: [],
   isLoaded: true,
 })
@@ -85,6 +87,7 @@ export default function WebsiteContextProvider({
         setCurrentWebsite,
         websites,
         isLoaded,
+        getCurrentWebsite,
       }}
     >
       {children}
