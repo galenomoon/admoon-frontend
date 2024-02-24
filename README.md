@@ -1,34 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Admoon
+
+Admoon is a powerful SaaS platform designed to streamline website management for administrators. This project focuses on the frontend aspect of the Admoon system.
+
+## Features
+
+- Intuitive user interface for effortless website administration.
+- Customizable dashboards tailored to individual client needs.
+- Seamless integration with backend systems for data synchronization.
+- Responsive design for optimal performance across devices.
+- Extensive documentation to guide administrators through every feature.
 
 ## Getting Started
 
-First, run the development server:
+To get started with Admoon, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+1. Clone this repository to your local machine.
+2. Install the necessary dependencies using `npm install`.
+3. Start the development server with `npm run dev`.
+4. Access the application at `http://localhost:4000` in your web browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Usage
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Once the development server is running, you can begin exploring the Admoon frontend:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Navigate through the dashboard to manage website content.
+- Customize settings to suit your specific requirements.
+- Monitor website performance and analytics in real-time.
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+Contributions are welcome! If you'd like to contribute to Admoon, please follow these guidelines:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Fork the repository.
+2. Create your feature branch (`git checkout -b feature/YourFeatureName`).
+3. Commit your changes (`git commit -am 'Add some feature'`).
+4. Push to the branch (`git push origin feature/YourFeatureName`).
+5. Open a pull request.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contact
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+For any inquiries or support, please contact [galeno.dev@gmail.com](mailto:galeno.dev@gmail.com).
