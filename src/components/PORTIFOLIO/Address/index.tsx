@@ -14,6 +14,7 @@ import toast from "react-hot-toast"
 
 export default function Address() {
   const { currentWebsite, getCurrentWebsite } = useContext(WebsiteContext)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
   const [currentAddress, setCurrentAddress] = useState({
     formatted_address: "",
     coords: { latitude: "", longitude: "" },
@@ -22,6 +23,22 @@ export default function Address() {
   useEffect(() => {
     getAddress()
   }, [currentWebsite])
+
+  useEffect(() => {
+    compareAddresses()
+  }, [currentWebsite, currentAddress])
+
+  function compareAddresses() {
+    const { latitude: preventLat, longitude: preventLng } =
+      currentWebsite?.address?.[0] || {}
+
+    const { latitude, longitude } = currentAddress.coords
+
+    const currentAddressAreEqual =
+      preventLat === latitude && preventLng === longitude
+
+    setHasSubmitted(currentAddressAreEqual)
+  }
 
   async function getAddress() {
     try {
@@ -61,6 +78,8 @@ export default function Address() {
 
       await api_client[method](endpoint, payload)
       await getCurrentWebsite()
+
+      setHasSubmitted(true)
       toast.success("Endereço cadastrado com sucesso")
     } catch (error) {
       console.error(error)
@@ -83,7 +102,7 @@ export default function Address() {
             <br />
             <Button
               onClick={submitAddress}
-              disabled={!currentAddress.formatted_address}
+              disabled={!currentAddress.formatted_address || hasSubmitted}
             >
               Cadastrar Enderço
             </Button>
