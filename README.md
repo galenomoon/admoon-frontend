@@ -1,4 +1,4 @@
-# Admoon
+# Admoon 💙🌙
 
 Admoon is a powerful SaaS platform designed to streamline website management for administrators. This project focuses on the frontend aspect of the Admoon system.
 
