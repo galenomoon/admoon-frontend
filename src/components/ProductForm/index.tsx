@@ -69,8 +69,8 @@ export default function ProductForm({
     const payload = {
       ...product,
       price: String(product.price).includes("R$")
-        ? Number(String(product.price).replace(/\D/g, "")) / 100
-        : Number(String(product.price).replace(/\D/g, "")),
+        ? Number(String(product.price || 1).replace(/\D/g, "")) / 100
+        : Number(String(product.price || 1).replace(/\D/g, "")),
     }
 
     if (!payload.name) {
