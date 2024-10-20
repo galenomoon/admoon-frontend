@@ -431,8 +431,7 @@ export default function ProductForm({
         <div className="mt-6 flex gap-2">
           <button
             type="submit"
-            title={images.length ? "" : "Adicione pelo menos uma imagem"}
-            disabled={!isLoaded || !images.length}
+            disabled={!isLoaded}
             className="font-satoshi-medium flex h-12 w-full items-center justify-center rounded-lg bg-blue-800 px-4 text-white hover:opacity-80 disabled:bg-gray-600 disabled:opacity-80"
           >
             {isLoaded ? (
