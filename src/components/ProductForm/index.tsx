@@ -41,9 +41,7 @@ export default function ProductForm({
   const [images, setImages] = React.useState<IImage[]>(
     productByProp.images || [],
   )
-  const [product, setProduct] = React.useState<IProduct>({
-    ...productByProp,
-  })
+  const [product, setProduct] = React.useState<IProduct>({} as IProduct)
   const [isLoaded, setIsLoaded] = React.useState<boolean>(true)
 
   useEffect(() => {
