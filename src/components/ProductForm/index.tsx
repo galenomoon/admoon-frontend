@@ -81,15 +81,15 @@ export default function ProductForm({
     if (!payload.description) {
       return toast.error("Preencha a descrição do produto")
     }
-    if (!payload.price) {
-      return toast.error("Preencha o preço do produto")
-    }
+    // if (!payload.price) {
+    //   return toast.error("Preencha o preço do produto")
+    // }
     if (!payload.categoryId) {
       return toast.error("Selecione uma categoria")
     }
-    if (!images.length) {
-      return toast.error("Adicione pelo menos uma imagem ao produto")
-    }
+    // if (!images.length) {
+    //   return toast.error("Adicione pelo menos uma imagem ao produto")
+    // }
 
     return await api_client[method](
       `websites/${currentWebsite.id}` + endpoint,
@@ -103,6 +103,7 @@ export default function ProductForm({
         } finally {
           getAll()
           close()
+          setProduct({} as IProduct)
         }
       })
       .catch(console.error)
@@ -443,7 +444,10 @@ export default function ProductForm({
             )}
           </button>
           <button
-            onClick={close}
+            onClick={() => {
+              close()
+              setProduct({} as IProduct)
+            }}
             disabled={!isLoaded}
             type="button"
             className="text-typography-main font-satoshi-medium w-full rounded-lg bg-gray-200 px-4 py-2 hover:opacity-80"

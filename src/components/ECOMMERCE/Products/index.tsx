@@ -280,7 +280,10 @@ export default function Products() {
         <ProductForm
           categories={categories}
           getAll={getAll}
-          close={() => close()}
+          close={() => {
+            close()
+            setSelectedProduct(undefined)
+          }}
           product={
             {
               ...selectedProduct,

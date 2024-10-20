@@ -27,7 +27,6 @@ export default function Modal({
     <motion.div
       animate={fade(isOpen)}
       initial={{ display: "none" }}
-      onClick={close}
       className="max-w-screen fixed left-0 top-0 z-[901] flex h-screen max-h-screen w-screen items-center justify-center overflow-hidden bg-black bg-opacity-20 backdrop-blur-md"
     >
       <motion.nav
